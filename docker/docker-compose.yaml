@@ -1,0 +1,167 @@
+version: '3'
+services:
+ jatan-db:
+    image: mariadb
+    networks:
+      - jatan_network_database
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - "node.id==gzryrk3hljee4gn58uz31rd59"
+    ports:
+      - "6001:3306"
+    volumes:
+      - jatan_maria_db_database_dir:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=jatan
+      - MYSQL_PASSWORD=jatan
+      - MYSQL_DATABASE=jatan
+ jatan-gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    networks:
+      - jatan_network
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - "node.id==gzryrk3hljee4gn58uz31rd59"
+    hostname: 10.2.119.11
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+         GITLAB_PORT = 6002
+         GITLAB_SSH_PORT = 6004
+         external_url = 'http://10.2.119.11:6002/'
+         gitlab_rails['gitlab_port'] = 6002
+         gitlab_rails['lfs_enabled'] = true
+         gitlab_rails['smtp_enable'] = true
+         gitlab_rails['smtp_address'] = "smtp.gmail.com"
+         gitlab_rails['smtp_port'] = 587
+         gitlab_rails['smtp_user_name'] = "hrw.jatan@gmail.com"
+         gitlab_rails['smtp_password'] = "j4t4nj4t4n"
+         gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+         gitlab_rails['smtp_authentication'] = "login"
+         gitlab_rails['smtp_enable_starttls_auto'] = true
+         gitlab_rails['smtp_tls'] = false
+         gitlab_rails['smtp_openssl_verify_mode'] = 'peer' # Can be: 'none', 'peer', 'client_once', 'fail_if_no_peer_cert', see http://api.rubyonrails.org/classes/ActionMailer/Base.html
+    ports:
+      - "6002:80"
+      - "6003:443"
+      - "6004:22"
+    volumes:
+      - jatan_gitlab_data_dir_config:/etc/gitlab
+      - jatan_gitlab_data_dir_logs:/var/log/gitlab
+      - jatan_gitlab_data_dir_data:/var/opt/gitlab
+ jatan-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+    restart: always
+    networks:
+      - jatan_network
+    deploy:
+      placement:
+        constraints:
+          - "node.id==gzryrk3hljee4gn58uz31rd59"
+    ports:
+     - "6007:80"
+    volumes:
+      - jatan_phpmyadmin:/sessions
+# adminer:
+#     image: adminer
+#     networks:
+#       - jatan_network_database
+#     restart: always
+#     ports:
+#       - 6007:8080
+ jatan-jenkins:
+    container_name: jatan_jenkins
+#    image: jatan_jenkins
+    image: jenkins/jenkins:lts
+    networks:
+      - jatan_network
+    deploy:
+      placement:
+        constraints:
+          - "node.id==re0jl6h88ao1tu4xjonhrnj6w"
+    environment:
+      JAVA_OPTS: "-Djava.awt.headless=true"
+    ports:
+      - "6005:50000"
+      - "6006:8080"
+    volumes:
+      - jatan_jenkins_data_dir:/var/jenkins_home
+# jatan-reverse:
+#    container_name: reverse
+#    networks:
+#      - jatan_network
+#    hostname: 10.2.119.11
+#    image: nginx
+#    ports:
+#      - 6008:80
+#    volumes:
+#      - jatan_reverse_proxy_data_dir:/etc/nginx
+#      - jatan_www:/etc/nginx/html
+ jatan-sonarqube:
+    image: sonarqube
+    networks:
+      - jatan_network
+    deploy:
+      placement:
+        constraints:
+          - "node.id==ogue8pwiten6wyr6r47km6jkj"
+    restart: always
+    environment:
+      - SONAR_JDBC_USERNAME=sonarqube
+      - SONAR_JDBC_PASSWORD=bhkjca12eufas
+      - SONAR_JDBC_URL=jdbc:postgresql://jatan-sonarqube-db:5432/sonarqube
+    ports:
+      - "6009:9000"
+      - "6010:9092"
+    volumes:
+      - jatan_sonarqube_data_dir_conf:/opt/sonarqube/conf
+      - jatan_sonarqube_data_dir_data:/opt/sonarqube/data
+      - jatan_sonarqube_data_dir_ext:/opt/sonarqube/extensions
+      - jatan_sonarqube_data_dir_plugins:/opt/sonarqube/lib/bundled-plugins
+ jatan-sonarqube-db:
+    image: postgres
+    networks:
+      - jatan_network
+    deploy:
+      placement:
+        constraints:
+          - "node.id==ogue8pwiten6wyr6r47km6jkj"
+    restart: always
+    environment:
+      - POSTGRES_USER=sonarqube
+      - POSTGRES_PASSWORD=bhkjca12eufas
+      - POSTGRES_DB=sonarqube
+    ports:
+      - "6011:5432"
+    volumes:
+      - jatan_sonarqube_data_dir_db:/var/lib/postgresql
+      # This needs explicit mapping due to https://github.com/docker-library/postgres/blob/4e48e3228a30763913ece952c611e5e9b95c8759/Dockerfile.te$
+      - jatan_sonarqube_data_dir_db_data:/var/lib/postgresql/data
+
+networks:
+  jatan_network:
+    driver: overlay
+  jatan_network_database:
+    driver: overlay
+
+volumes:
+  jatan_maria_db_database_dir:
+  jatan_gitlab_data_dir_config:
+  jatan_gitlab_data_dir_logs:
+  jatan_gitlab_data_dir_data:
+  jatan_jenkins_data_dir:
+  jatan_reverse_proxy_data_dir:
+  jatan_www:
+  jatan_sonarqube_data_dir_conf:
+  jatan_sonarqube_data_dir_data:
+  jatan_sonarqube_data_dir_ext:
+  jatan_sonarqube_data_dir_plugins:
+  jatan_sonarqube_data_dir_db:
+  jatan_sonarqube_data_dir_db_data:
+  jatan_phpmyadmin:
