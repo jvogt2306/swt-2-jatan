@@ -1,0 +1,19 @@
+version: '3.5'
+
+volumes:
+  db:
+    name: jatan-db
+services:
+  mysql:
+    image: mysql:latest
+    container_name: jatan-db
+    volumes:
+    - db:/var/lib/mysql
+    - ./src/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: jatandatabase
+      MYSQL_USER: jatan
+      MYSQL_PASSWORD: root
+    ports:
+      - "127.0.0.1:3306:3306"
