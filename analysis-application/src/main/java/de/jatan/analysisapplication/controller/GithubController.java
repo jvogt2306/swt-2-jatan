@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
@@ -32,8 +33,8 @@ public class GithubController {
   }
 
   @GetMapping(path = "/user")
-  public GithubUser getGithubUser() {
-    GithubUser user = githubService.getGithubUser();
+  public GithubUser getGithubUser(@RequestParam String login) {
+    GithubUser user = githubService.getGithubUser(login);
     Stream.of(user).forEach(u -> System.out.println(u.toString()));
     return user;
   }

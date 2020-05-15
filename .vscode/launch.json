@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AnalysisApplication<analysis-application>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "de.jatan.analysisapplication.AnalysisApplication",
+            "projectName": "analysis-application",
+            "args": ""
+        }
+    ]
+}

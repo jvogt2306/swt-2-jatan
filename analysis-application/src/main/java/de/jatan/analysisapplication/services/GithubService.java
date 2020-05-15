@@ -12,9 +12,10 @@ import de.jatan.analysisapplication.Domain.Model.GithubUser;
 @Service
 public class GithubService {
 
-  public GithubUser getGithubUser() {
+  public GithubUser getGithubUser(String githubUsername) {
     RestTemplate restTemplate = new RestTemplate();
-    GithubUser githubUser = restTemplate.getForObject("https://api.github.com/users/jvogt2306", GithubUser.class);
+    GithubUser githubUser = restTemplate.getForObject("https://api.github.com/users/" + githubUsername,
+        GithubUser.class);
     return githubUser;
   }
 
