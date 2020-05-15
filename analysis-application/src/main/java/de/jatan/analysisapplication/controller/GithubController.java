@@ -28,8 +28,8 @@ public class GithubController {
    */
   @GetMapping(path = "/repos")
   @ResponseBody
-  public List<GithubRepository> getRepository(HttpServletResponse response) {
-    return githubService.getRepositories();
+  public List<GithubRepository> getRepository(@RequestParam String login) {
+    return githubService.getRepositories(login);
   }
 
   @GetMapping(path = "/user")

@@ -2,10 +2,8 @@ package de.jatan.analysisapplication.services;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
 
@@ -19,11 +17,10 @@ public class GithubService {
     return githubUser;
   }
 
-  public List<GithubRepository> getRepositories() {
+  public List<GithubRepository> getRepositories(String githubUsername) {
     RestTemplate restTemplate = new RestTemplate();
-    List<GithubRepository> list = Arrays
-        .asList(restTemplate.getForObject("https://api.github.com/users/jvogt2306/repos", GithubRepository[].class));
-    System.out.println(list.size());
+    List<GithubRepository> list = Arrays.asList(restTemplate
+        .getForObject("https://api.github.com/users/" + githubUsername + " /repos", GithubRepository[].class));
     return list;
   }
 }
