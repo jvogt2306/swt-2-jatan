@@ -16,7 +16,6 @@ public class GithubService {
     RestTemplate restTemplate = new RestTemplate();
     GithubUser githubUser = restTemplate.getForObject("https://api.github.com/users/jvogt2306", GithubUser.class);
     return githubUser;
-
   }
 
   public List<GithubRepository> getRepositories() {

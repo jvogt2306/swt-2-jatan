@@ -17,7 +17,7 @@ public class PlaceholderController {
   private PlaceholderService placeholderService;
 
   @GetMapping(path = "/restListOfObjects")
-  public Placeholder[] getAllEmployeesJSONWithObect(Model model) {
+  public Placeholder[] getAllEmployeesJSONWithObect() {
     Placeholder[] placeholders = placeholderService.getAllEmployeesJSONWithObect();
     Stream.of(placeholders).forEach(p -> System.out.println(p));
     return placeholders;
