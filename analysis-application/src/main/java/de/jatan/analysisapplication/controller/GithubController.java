@@ -19,9 +19,6 @@ public class GithubController {
   @Autowired
   private GithubService githubService;
 
-  /*
-   * Todo: Requestparam (repository UserID)
-   */
   @GetMapping(path = "/repos")
   @ResponseBody
   public List<GithubRepository> getRepository(@RequestParam String login) {
