@@ -9,20 +9,19 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_informations")
-public class UserInformationEntry {
+public class RepositoryInformation {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", updatable = false, nullable = false)
   private Long id;
 
+  private String description;
+
+  private String url;
+
   private String name;
 
-  private String login;
-
-  private String bio;
-
- 
 
     /**
      * @return Long return the id
@@ -39,6 +38,34 @@ public class UserInformationEntry {
     }
 
     /**
+     * @return String return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return String return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
      * @return String return the name
      */
     public String getName() {
@@ -50,34 +77,6 @@ public class UserInformationEntry {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * @return String return the login
-     */
-    public String getLogin() {
-        return login;
-    }
-
-    /**
-     * @param login the login to set
-     */
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    /**
-     * @return String return the bio
-     */
-    public String getBio() {
-        return bio;
-    }
-
-    /**
-     * @param bio the bio to set
-     */
-    public void setBio(String bio) {
-        this.bio = bio;
     }
 
 }

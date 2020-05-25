@@ -25,7 +25,6 @@ public class OrganizationController {
     n.setDescription(oDto.description);
     n.setUrl(oDto.url);
     organizations.save(n);
-    System.out.println("Added");
     return n;
   }
 
