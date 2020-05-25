@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
 import de.jatan.analysisapplication.services.GithubService;
@@ -30,5 +32,12 @@ public class GithubController {
     GithubUser user = githubService.getGithubUser(login);
     Stream.of(user).forEach(u -> System.out.println(u.toString()));
     return user;
+  }
+
+  @GetMapping(path = "/organizations")
+  public GithubOrganization getGithubOrganization(@RequestParam String organizationName) {
+    GithubOrganization organization = githubService.getOrganizations(organizationName);
+    Stream.of(organization).forEach(u -> System.out.println(u.toString()));
+    return organization;
   }
 }

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
 
@@ -22,5 +24,13 @@ public class GithubService {
     List<GithubRepository> list = Arrays.asList(restTemplate
         .getForObject("https://api.github.com/users/" + githubUsername + " /repos", GithubRepository[].class));
     return list;
+  }
+
+  public GithubOrganization getOrganizations(String organizationName) {
+    RestTemplate restTemplate = new RestTemplate();
+    GithubOrganization organization = restTemplate.getForObject("https://api.github.com/orgs/" + organizationName,
+    GithubOrganization.class);
+  
+    return organization;
   }
 }
