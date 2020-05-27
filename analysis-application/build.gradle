@@ -3,11 +3,18 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
   id 'war'
+  id 'org.sonarqube' version "2.6.1"
 }
 
 group = 'de.jatan'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+sonarqube {
+    properties {
+        property 'sonar.projectName', 'Jatan - Analysis-Application'
+    }
+}
 
 configurations {
 	developmentOnly
