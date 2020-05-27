@@ -30,4 +30,9 @@ out/
 
 ### VS Code ###
 .vscode/
-../.vscode/
+../.vscode/settings.json
+###JGIT-Path ###
+../src/main/resources/repositories/**
+
+### Spring Binaries ###
+/bin/**
