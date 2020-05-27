@@ -34,3 +34,5 @@ out/
 
 ### Spring Boot ##
 /bin/
+
+src/main/resources/Repositories
