@@ -33,4 +33,9 @@ out/
 ../.vscode/
 
 ### Spring Boot ##
-/bin/
+bin/
+.env
+../.vscode/settings.json
+
+###JGIT-Path ###
+src/main/resources/repositories/
