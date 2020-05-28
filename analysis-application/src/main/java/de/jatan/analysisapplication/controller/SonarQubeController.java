@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
@@ -24,8 +25,9 @@ public class SonarQubeController {
   }
 
   @GetMapping(path = "/create")
-  public void getHealth() {
-    sonarQubeService.scanRepository();
+  public void getHealth(@RequestParam String projectName, String language) {
+    System.err.println(language);
+    sonarQubeService.scanRepository(projectName, language);
     // sonarQubeService.temp();
   }
 }

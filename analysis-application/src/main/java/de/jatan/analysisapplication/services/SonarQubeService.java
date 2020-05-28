@@ -9,10 +9,11 @@ public class SonarQubeService {
 
   private String applicationPath = System.getProperty("user.dir");
   private String repositoryPath = "/src/main/resources/repositories/";
+  private String codeLanguage;
 
-  public void scanRepository() {
+  public void scanRepository(String projectName, String language) {
+    this.codeLanguage = language;
     try {
-      String projectName = "projekt1-ar-react-test";
       String repositoryFolder = applicationPath + repositoryPath;
       String projectPath = repositoryFolder + projectName;
       createSonarPropertiesFile(repositoryFolder, projectName);
@@ -34,17 +35,21 @@ public class SonarQubeService {
   }
 
   private void createSonarPropertiesFile(String path, String projectName) throws IOException {
-    File sonarPropertiesFile = new File("sonar-project.properties");
+    File sonarPropertiesFile = new File(path + "/" + projectName + "/" + "sonar-project.properties");
     BufferedWriter writer = new BufferedWriter(new FileWriter(sonarPropertiesFile, true));
     writeSonarProperties(writer, projectName);
   }
 
   private void writeSonarProperties(BufferedWriter writer, String projectName) throws IOException {
-    writer.write("sonar.sources=src");
-    writer.newLine();
-    // writer.write("sonar.java.binaries=bin");
-    // writer.newLine();
+    System.err.println(this.codeLanguage);
+    if (this.codeLanguage == "java") {
+      writer.write("sonar.sources=src");
+      writer.newLine();
+      // writer.write("sonar.java.binaries=bin");
+      // writer.newLine();
+    }
     writer.write("sonar.projectKey=" + projectName);
+    writer.newLine();
     writer.close();
   }
 
