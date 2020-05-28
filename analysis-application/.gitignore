@@ -36,3 +36,4 @@ src/main/resources/repositories/
 
 ### Spring Binaries ###
 /bin/**
+.env
