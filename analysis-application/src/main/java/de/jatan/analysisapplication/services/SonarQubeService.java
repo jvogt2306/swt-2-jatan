@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class SonarQubeService {
 
   private String applicationPath = System.getProperty("user.dir");
-  private String repositoryPath = "/src/main/resources/Repositories/";
+  private String repositoryPath = "/src/main/resources/repositories/";
 
   public void scanRepository() {
     try {
