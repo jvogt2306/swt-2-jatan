@@ -23,14 +23,16 @@ public class SonarQubeService {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      // e.printStackTrace();
     }
   }
 
   private void doScanRespository(String path) throws InterruptedException, IOException {
+
     ProcessBuilder processBuilder = new ProcessBuilder();
-    processBuilder.command("bash", "cd", path);
-    processBuilder.command("sonar-scanner");
+    processBuilder.redirectErrorStream(true);
+    processBuilder.directory(new File(path));
+    processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties");
     executeProcesses(processBuilder);
   }
 
@@ -42,26 +44,29 @@ public class SonarQubeService {
 
   private void writeSonarProperties(BufferedWriter writer, String projectName) throws IOException {
     System.err.println(this.codeLanguage);
-    if (this.codeLanguage == "java") {
+    if (this.codeLanguage.equals("java")) {
       writer.write("sonar.sources=src");
       writer.newLine();
-      // writer.write("sonar.java.binaries=bin");
-      // writer.newLine();
+      writer.write("sonar.java.binaries=.");
+      writer.newLine();
     }
     writer.write("sonar.projectKey=" + projectName);
     writer.newLine();
     writer.close();
   }
 
-  private void executeProcesses(ProcessBuilder processBuilder) throws InterruptedException, IOException {
+  private boolean executeProcesses(ProcessBuilder processBuilder) throws IOException, InterruptedException {
     Process process = processBuilder.start();
+
     StringBuilder output = new StringBuilder();
     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
     String line;
     while ((line = reader.readLine()) != null) {
       output.append(line + "\n");
+      System.err.println(line + "\n");
     }
     process.waitFor();
-    System.err.println(output);
+    process.destroy();
+    return true;
   }
 }

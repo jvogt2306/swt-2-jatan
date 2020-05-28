@@ -33,6 +33,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  implementation 'org.eclipse.jgit:org.eclipse.jgit:5.4.2.201908231537-r'
+  compile 'io.github.cdimascio:java-dotenv:5.2.1'
   compile("mysql:mysql-connector-java")
 	runtimeOnly 'com.h2database:h2'
   testImplementation('org.springframework.boot:spring-boot-starter-test') {
