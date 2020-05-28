@@ -32,13 +32,9 @@ public class GithubService {
   }
 
   public String cloneRepository(RepositoryDTO dto) throws InvalidRemoteException, TransportException, GitAPIException {
-    // Git.cloneRepository().setURI("https://github.com/eclipse/jgit.git").setDirectory(new
-    // File("/path/to/repo")).call();
-
-    Git.cloneRepository().setURI("https://github.com/jvogt2306/billman.git")
-        .setDirectory(new File("/home/jan/git/swt-2-jatan/analysis-application/src/main/resources/repositories"))
-        .call();
-
+    String applicationPath = System.getProperty("user.dir");
+    Git.cloneRepository().setURI(dto.url)
+        .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName)).call();
     return "suchen ..." + dto.url;
   }
 }
