@@ -46,10 +46,10 @@ public class GithubController {
   @PostMapping(value = "/repository")
   public String postMethodName(@RequestBody RepositoryDTO entity)
       throws InvalidRemoteException, TransportException, GitAPIException {
-    boolean finishedClone = githubService.cloneRepository(entity);
-    if(finishedClone){
-      sonarQubeService.scanRepository(entity.projectName, entity.language);
-    }
+    githubService.cloneRepository(entity);
+    sonarQubeService.createSonarQubeProject(entity.projectName);
+    sonarQubeService.updateWebhookPropertieSonarQubeProject(entity.projectName);
+    sonarQubeService.scanRepository(entity.projectName, entity.language);
     return "finished";
   }
 }

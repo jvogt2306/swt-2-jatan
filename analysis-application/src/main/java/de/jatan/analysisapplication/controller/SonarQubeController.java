@@ -21,13 +21,13 @@ public class SonarQubeController {
 
   @PostMapping(path = "/hook")
   public void printSonarQubeStack(@RequestBody SonarQubeResponse sonarbody) {
-    System.err.println(sonarbody.getProject().getKey());
+    System.err.println("HOOK:" + sonarbody.getProject().toString());
   }
 
   @GetMapping(path = "/create")
   public void getHealth(@RequestParam String projectName, String language) {
-    System.err.println(language);
+    sonarQubeService.createSonarQubeProject(projectName);
+    sonarQubeService.updateWebhookPropertieSonarQubeProject(projectName);
     sonarQubeService.scanRepository(projectName, language);
-    // sonarQubeService.temp();
   }
 }
