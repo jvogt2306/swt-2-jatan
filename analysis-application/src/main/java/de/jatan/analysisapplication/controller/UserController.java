@@ -31,5 +31,6 @@ public class UserController {
   public @ResponseBody Iterable<UserInformationEntry> getAllUsers() {
     return userRepository.findAll();
   }
+ 
 
 }

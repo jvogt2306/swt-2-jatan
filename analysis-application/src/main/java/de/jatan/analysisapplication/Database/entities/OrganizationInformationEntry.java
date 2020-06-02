@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_informations")
+@Table(name = "organization_informations")
 public class OrganizationInformationEntry {
 
   @Id
@@ -18,6 +18,7 @@ public class OrganizationInformationEntry {
 
   private String url;
   private String description;
+  private String login;
 
     /**
      * @return Long return the id
@@ -59,6 +60,21 @@ public class OrganizationInformationEntry {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    /**
+     * @return String return the login
+     */
+    public String getLogin() {
+        return login;
+    }
+
+    /**
+     * @param login the login to set
+     */
+    public void setLogin(String login) {
+        this.login = login;
     }
 
 }
