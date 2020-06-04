@@ -10,6 +10,7 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
@@ -38,10 +39,10 @@ public class GithubService {
     String githubUsername = dotenv.get("githubUsername");
     String githubPassword = dotenv.get("githubPassword");
     String applicationPath = System.getProperty("user.dir");
+    FileSystemUtils.deleteRecursively(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName));
     Git.cloneRepository().setURI(dto.url)
         .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName))
         .setCredentialsProvider(new UsernamePasswordCredentialsProvider(githubUsername, githubPassword)).call();
-    System.out.println(dto.projectName + " was cloned.");
     return true;
   }
 }
