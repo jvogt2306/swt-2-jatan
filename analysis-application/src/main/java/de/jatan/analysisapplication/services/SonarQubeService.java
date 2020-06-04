@@ -6,7 +6,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -41,6 +40,8 @@ public class SonarQubeService {
       e.printStackTrace();
     } catch (InterruptedException e) {
       // e.printStackTrace();
+    } catch (NullPointerException e) {
+      //e.printStackTrace();
     }
   }
 
@@ -86,7 +87,6 @@ public class SonarQubeService {
   }
 
   private void writeSonarProperties(BufferedWriter writer, String projectName) throws IOException {
-    System.err.println(this.codeLanguage);
     if (this.codeLanguage.equals("java")) {
       writer.write("sonar.sources=src");
       writer.newLine();
@@ -112,7 +112,6 @@ public class SonarQubeService {
     StringBuilder output = new StringBuilder();
     while ((line = reader.readLine()) != null) {
       output.append(line + "\n");
-      System.err.println(line + "\n");
     }
   }
 }

@@ -41,6 +41,7 @@ public class GithubService {
     Git.cloneRepository().setURI(dto.url)
         .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName))
         .setCredentialsProvider(new UsernamePasswordCredentialsProvider(githubUsername, githubPassword)).call();
+    System.out.println(dto.projectName + " was cloned.");
     return true;
   }
 }
