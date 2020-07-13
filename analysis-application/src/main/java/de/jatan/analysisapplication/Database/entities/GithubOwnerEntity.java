@@ -1,5 +1,6 @@
 package de.jatan.analysisapplication.Database.entities;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ public class GithubOwnerEntity {
   private String url;
 
   @OneToMany(mappedBy = "github_owner")
-  private Set<RepositoryInformationEntity> repository_information;
+  private List<RepositoryInformationEntity> repository_information;
 
   public void addRepository_information(RepositoryInformationEntity repository_information) {
     this.repository_information.add(repository_information);
