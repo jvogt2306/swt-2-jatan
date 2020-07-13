@@ -11,6 +11,8 @@ import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
 import de.jatan.analysisapplication.controller.DTO.RepositoryDTO;
@@ -33,14 +35,10 @@ public class GithubService {
     return list;
   }
 
-  public boolean cloneRepository(RepositoryDTO dto) throws InvalidRemoteException, TransportException, GitAPIException {
-    Dotenv dotenv = Dotenv.load();
-    String githubUsername = dotenv.get("githubUsername");
-    String githubPassword = dotenv.get("githubPassword");
-    String applicationPath = System.getProperty("user.dir");
-    Git.cloneRepository().setURI(dto.url)
-        .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName))
-        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(githubUsername, githubPassword)).call();
-    return true;
+  public GithubOrganization getOrganizations(String organizationName) {
+    RestTemplate restTemplate = new RestTemplate();
+    GithubOrganization organization = restTemplate.getForObject("https://api.github.com/orgs/" + organizationName,
+        GithubOrganization.class);
+    return organization;
   }
 }

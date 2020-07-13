@@ -21,8 +21,8 @@ public class UserController {
   @PostMapping(path = "/add")
   public @ResponseBody UserInformationEntry addNewUser(@RequestBody UserInformationDTO uDto) {
     UserInformationEntry n = new UserInformationEntry();
-    n.setfirstName(uDto.firstName);
-    n.setlastName(uDto.lastName);
+    n.setName(uDto.name);
+    n.setLogin(uDto.login);
     userRepository.save(n);
     return n;
   }
@@ -31,4 +31,6 @@ public class UserController {
   public @ResponseBody Iterable<UserInformationEntry> getAllUsers() {
     return userRepository.findAll();
   }
+ 
+
 }
