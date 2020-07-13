@@ -29,8 +29,7 @@ public class GithubService {
   public GithubOrganization getOrganizations(String organizationName) {
     RestTemplate restTemplate = new RestTemplate();
     GithubOrganization organization = restTemplate.getForObject("https://api.github.com/orgs/" + organizationName,
-    GithubOrganization.class);
-  
+        GithubOrganization.class);
     return organization;
   }
 }
