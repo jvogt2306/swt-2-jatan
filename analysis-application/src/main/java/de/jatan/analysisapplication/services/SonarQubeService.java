@@ -6,10 +6,12 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectResponse;
+import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
 
 @Service
 public class SonarQubeService {
@@ -40,28 +42,32 @@ public class SonarQubeService {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {
-      // e.printStackTrace();
+      e.printStackTrace();
+    } catch (NullPointerException e) {
+      e.printStackTrace();
     }
   }
 
   public boolean createSonarQubeProject(String projectName) {
+    if (checkIfProjectExist(projectName))
+      return true;
     String createSonarProjectEndpoint = sonarURL + "api/projects/create";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(createSonarProjectEndpoint)
         .queryParam("name", projectName).queryParam("project", projectName);
     ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
         Object.class);
-
     return (responseEntity.getStatusCode() == HttpStatus.OK) ? true : false;
   }
 
   public boolean updateWebhookPropertieSonarQubeProject(String projectName) {
+    if (checkIfWebhookExist(projectName))
+      return true;
     String createSonarWebhookEndpoint = sonarURL + "/api/webhooks/create";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(createSonarWebhookEndpoint)
         .queryParam("name", "Sonarqube-Spring").queryParam("project", projectName)
         .queryParam("url", analysisSonarqubeHook);
     ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
         Object.class);
-
     return (responseEntity.getStatusCode() == HttpStatus.OK) ? true : false;
   }
 
@@ -73,10 +79,8 @@ public class SonarQubeService {
     executeProcesses(processBuilder);
   }
 
-  private void removeRepositoryFromPath(String path) {
-    ProcessBuilder processBuilder = new ProcessBuilder();
-    processBuilder.redirectErrorStream(true);
-    processBuilder.directory(new File(path));
+  private void removeRepositoryFromPath(String path) throws IOException {
+    FileSystemUtils.deleteRecursively(new File(path));
   }
 
   private void createSonarPropertiesFile(String path, String projectName) throws IOException {
@@ -85,8 +89,25 @@ public class SonarQubeService {
     writeSonarProperties(writer, projectName);
   }
 
+  private boolean checkIfProjectExist(String projectName) {
+    String searchSonarProjectEndpoint = sonarURL + "api/projects/search";
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
+        .queryParam("projects", projectName);
+    ResponseEntity<SonarQubeProjectResponse> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
+        HttpMethod.POST, null, SonarQubeProjectResponse.class);
+    return (responseEntity.getBody().getComponents().length == 0) ? false : true;
+  }
+
+  private boolean checkIfWebhookExist(String projectName) {
+    String searchSonarProjectEndpoint = sonarURL + "api/webhooks/list";
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint).queryParam("project",
+        projectName);
+    ResponseEntity<SonarQubeProjectWebhook> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
+        HttpMethod.POST, null, SonarQubeProjectWebhook.class);
+    return (responseEntity.getBody().getWebhooks().length == 0) ? false : true;
+  }
+
   private void writeSonarProperties(BufferedWriter writer, String projectName) throws IOException {
-    System.err.println(this.codeLanguage);
     if (this.codeLanguage.equals("java")) {
       writer.write("sonar.sources=src");
       writer.newLine();
@@ -100,19 +121,8 @@ public class SonarQubeService {
 
   private boolean executeProcesses(ProcessBuilder processBuilder) throws IOException, InterruptedException {
     Process process = processBuilder.start();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    readProcessResponse(reader);
     process.waitFor();
     process.destroy();
     return true;
-  }
-
-  private void readProcessResponse(BufferedReader reader) throws IOException {
-    String line;
-    StringBuilder output = new StringBuilder();
-    while ((line = reader.readLine()) != null) {
-      output.append(line + "\n");
-      System.err.println(line + "\n");
-    }
   }
 }

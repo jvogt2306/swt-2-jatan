@@ -1,11 +1,7 @@
 package de.jatan.analysisapplication.controller;
 
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +18,7 @@ import de.jatan.analysisapplication.Database.repositories.UserInformationEntryRe
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
-import de.jatan.analysisapplication.controller.DTO.RepositoryDTO;
 import de.jatan.analysisapplication.services.GithubService;
-import de.jatan.analysisapplication.services.SonarQubeService;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/github")
@@ -36,11 +27,9 @@ public class GithubController {
   @Autowired
   private GithubService githubService;
   @Autowired
-  private SonarQubeService sonarQubeService;
-  private UserInformationEntryRepository userRepository;
-  @Autowired
   private OrganizationInformationRepository organizationRepository;
   @Autowired
+  private UserInformationEntryRepository userRepository;
   private RepositoryInformationEntry repositoryInformation;
 
   @GetMapping(path = "/repository", params = "login")
@@ -91,15 +80,5 @@ public class GithubController {
   @GetMapping(path = "/db/user")
   public @ResponseBody Iterable<UserInformationEntry> getGithubUser() {
     return userRepository.findAll();
-  }
-
-  @PostMapping(value = "/repository")
-  public String postMethodName(@RequestBody RepositoryDTO entity)
-      throws InvalidRemoteException, TransportException, GitAPIException {
-    githubService.cloneRepository(entity);
-    sonarQubeService.createSonarQubeProject(entity.projectName);
-    sonarQubeService.updateWebhookPropertieSonarQubeProject(entity.projectName);
-    sonarQubeService.scanRepository(entity.projectName, entity.language);
-    return "finished";
   }
 }
