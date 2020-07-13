@@ -1,8 +1,9 @@
 package de.jatan.analysisapplication.Database.entities;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,11 +23,11 @@ public class GithubOwnerEntity {
   private String login;
   private String url;
 
-  @OneToMany(mappedBy = "github_owner")
-  private List<RepositoryInformationEntity> repository_information;
+  @OneToMany(mappedBy = "github_owner", cascade = CascadeType.ALL)
+  private List<RepositoryInformationEntity> repositories = new ArrayList<>();
 
-  public void addRepository_information(RepositoryInformationEntity repository_information) {
-    this.repository_information.add(repository_information);
+  public void addRepository(RepositoryInformationEntity repository) {
+    this.repositories.add(repository);
   }
 
   public String getLogin() {
