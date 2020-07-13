@@ -3,6 +3,7 @@ package de.jatan.analysisapplication.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +41,7 @@ public class GithubController {
 
   @GetMapping(path = "/repository", params = "login")
   @ResponseBody
-  public Iterable<RepositoryInformationEntity> getRepositoryByLogin(@RequestParam String login) {
+  public RepositoryInformationEntity getRepositoryByLogin(@RequestParam String login) {
     List<GithubRepository> repositories = githubService.getRepositories(login);
     GithubRepository oneRepository = repositories.get(0);
 
@@ -50,10 +51,12 @@ public class GithubController {
       githubOwner.setUrl(oneRepository.getOwner().getUrl());
       githubOwnerRepository.save(githubOwner);
     }
-    ;
+    RepositoryInformationEntity repoEntity = new RepositoryInformationEntity();
+    repoEntity.setLogin(login);
+    repoEntity.setName("me");
     insertRepositoryToDB(oneRepository);
     // repositories.stream().forEach(repo -> insertRepositoryToDB(repo));
-    return repositoryInformation.findAll();
+    return repositoryInformation.save(repoEntity);
   }
 
   private boolean isOwnerExists(GithubOwner owner) {
@@ -62,6 +65,23 @@ public class GithubController {
     }
     return false;
   }
+
+  @GetMapping(path = "/repositories", params = "login")
+  @ResponseBody
+  public Iterable<RepositoryInformationEntity> getRepositoriesByLogin(@RequestParam String login) {
+    List<GithubRepository> repositories = githubService.getRepositories(login);
+    repositories.stream().forEach(repo -> insertRepositoryToDB2(repo));
+    return repositoryInformation.findAll();
+  }
+
+  private void insertRepositoryToDB2(GithubRepository repo) {
+    RepositoryInformationEntity n = new RepositoryInformationEntity();
+    n.setDescription(repo.getDescription());
+    n.setUrl(repo.getUrl());
+    n.setName(repo.getName());
+    repositoryInformation.save(n);
+  }
+
 
   @GetMapping(path = "/all")
   public @ResponseBody Iterable<RepositoryInformationEntity> getAllRepositories() {
@@ -87,15 +107,16 @@ public class GithubController {
     return organizationRepository.save(n);
   }
 
-  private void insertRepositoryToDB(GithubRepository repo) {
+  private RepositoryInformationEntity insertRepositoryToDB(GithubRepository repo) {
     List<GithubOwnerEntity> githubOwner = githubOwnerRepository.findByLogin(repo.getOwner().getLogin());
     GithubOwnerEntity firstGithubOwner = githubOwner.get(0);
     RepositoryInformationEntity repository = new RepositoryInformationEntity();
     repository.setDescription(repo.getDescription());
     repository.setUrl(repo.getUrl());
     repository.setName(repo.getName());
-    firstGithubOwner.addRepository_information(repository);
+    //firstGithubOwner.addRepository_information(repository);
     githubOwnerRepository.save(firstGithubOwner);
+    return repository;
   }
 
   @GetMapping(path = "/db/organizations")

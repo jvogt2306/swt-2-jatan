@@ -21,14 +21,16 @@ public class RepositoryInformationEntity {
   private String description;
   private String url;
   private String name;
+  private String login;
 
   // @OneToOne(cascade = CascadeType.ALL)
   // @JoinColumn(name = "github_owner_login", referencedColumnName = "login")
   // private GithubOwnerEntity github_owner;
 
+  /*
   @ManyToOne
   @JoinColumn(name = "github_owner_login", nullable = false)
-  private GithubOwnerEntity github_owner;
+  private GithubOwnerEntity github_owner; */
 
   public String getDescription() {
     return this.description;
@@ -54,4 +56,46 @@ public class RepositoryInformationEntity {
     this.name = name;
   }
 
+
+    /**
+     * @return Long return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return String return the login
+     */
+    public String getLogin() {
+        return login;
+    }
+
+    /**
+     * @param login the login to set
+     */
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    /**
+     * @return GithubOwnerEntity return the github_owner
+     */
+    /*
+    public GithubOwnerEntity getGithub_owner() {
+        return github_owner;
+    }
+
+    /* 
+    public void setGithub_owner(GithubOwnerEntity github_owner) {
+        this.github_owner = github_owner;
+    }
+*/
 }
