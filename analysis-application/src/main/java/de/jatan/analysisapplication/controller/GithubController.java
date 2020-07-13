@@ -34,10 +34,8 @@ public class GithubController {
 
   @GetMapping(path = "/repository", params = "login")
   @ResponseBody
-  public Iterable<RepositoryInformation> getRepositoryByLogin(@RequestParam String login) {
-    List<GithubRepository> repositories = githubService.getRepositories(login);
-    repositories.stream().forEach(repo -> insertRepositoryToDB(repo));
-    return repositoryInformation.findAll();
+  public List<GithubRepository> getRepositoryByLogin(@RequestParam String login) {
+    return githubService.getRepositories(login);
   }
 
   @GetMapping(path = "/all")
@@ -62,14 +60,6 @@ public class GithubController {
     n.setUrl(organization.getUrl());
     n.setLogin(organization.getLogin());
     return organizationRepository.save(n);
-  }
-
-  private void insertRepositoryToDB(GithubRepository repo) {
-    RepositoryInformation n = new RepositoryInformation();
-    n.setDescription(repo.getDescription());
-    n.setUrl(repo.getUrl());
-    n.setName(repo.getName());
-    repositoryInformation.save(n);
   }
 
   @GetMapping(path = "/db/organizations")
