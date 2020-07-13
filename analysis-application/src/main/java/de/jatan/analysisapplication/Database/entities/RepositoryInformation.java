@@ -1,26 +1,44 @@
 package de.jatan.analysisapplication.Database.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import de.jatan.analysisapplication.Domain.Model.GithubOwner;
+
 @Entity
-@Table(name = "repo_information")
+@Table(name = "repoinformation")
 public class RepositoryInformation {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", updatable = false, nullable = false)
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
   private Long id;
 
   private String description;
-
   private String url;
-
   private String name;
+
+  /*
+   * @OneToOne(cascade = CascadeType.ALL)
+   *
+   * @JoinColumn(name = "githubowner_id", referencedColumnName = "id") private
+   * GithubOwnerEntity owner;
+   */
+  /*
+   * @ManyToOne(fetch = FetchType.LAZY, optional = false)
+   *
+   * @JoinColumn(name = "", nullable = false) private OrganizationInformationEntry
+   * ;
+   */
 
   /**
    * @return Long return the id

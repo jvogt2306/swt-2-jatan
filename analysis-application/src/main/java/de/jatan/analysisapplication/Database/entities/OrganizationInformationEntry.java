@@ -5,11 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+//import javax.persistence.OneToMany;
+//import java.util.Set;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "organization_information")
 public class OrganizationInformationEntry {
+
+  // @OneToMany(mappedBy = "OrganizationInformationEntry")
+  // private Set<RepositoryInformation> repositoriesInformation;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +24,15 @@ public class OrganizationInformationEntry {
   private String url;
   private String description;
   private String login;
+
+  public OrganizationInformationEntry() {
+  }
+
+  public OrganizationInformationEntry(String url, String description, String login) {
+    this.url = url;
+    this.description = description;
+    this.login = login;
+  }
 
   /**
    * @return Long return the id
