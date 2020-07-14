@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "repository_information")
+@Table(name = "github_repository")
 public class RepositoryInformationEntity {
 
   @Id
@@ -23,14 +23,13 @@ public class RepositoryInformationEntity {
   private String name;
   private String login;
 
-  // @OneToOne(cascade = CascadeType.ALL)
-  // @JoinColumn(name = "github_owner_login", referencedColumnName = "login")
-  // private GithubOwnerEntity github_owner;
-
-  /*
   @ManyToOne
-  @JoinColumn(name = "github_owner_login", nullable = false)
-  private GithubOwnerEntity github_owner; */
+  @JoinColumn(name = "fk_github_owner")
+  private GithubOwnerEntity github_owner;
+
+  public void setGithub_owner(GithubOwnerEntity github_owner) {
+    this.github_owner = github_owner;
+  };
 
   public String getDescription() {
     return this.description;
@@ -85,17 +84,4 @@ public class RepositoryInformationEntity {
         this.login = login;
     }
 
-    /**
-     * @return GithubOwnerEntity return the github_owner
-     */
-    /*
-    public GithubOwnerEntity getGithub_owner() {
-        return github_owner;
-    }
-
-    /* 
-    public void setGithub_owner(GithubOwnerEntity github_owner) {
-        this.github_owner = github_owner;
-    }
-*/
 }
