@@ -20,7 +20,6 @@ public class GithubOwnerEntity {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id")
   private Long id;
-  private String login;
   private String url;
 
   @OneToMany(mappedBy = "github_owner", cascade = CascadeType.ALL)
@@ -28,14 +27,6 @@ public class GithubOwnerEntity {
 
   public void addRepository(RepositoryInformationEntity repository) {
     this.repositories.add(repository);
-  }
-
-  public String getLogin() {
-    return this.login;
-  }
-
-  public void setLogin(String login) {
-    this.login = login;
   }
 
   public String getUrl() {
