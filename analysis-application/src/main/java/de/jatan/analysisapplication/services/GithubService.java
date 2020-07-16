@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
-
-import antlr.StringUtils;
 import de.jatan.analysisapplication.Database.entities.GithubOwnerEntity;
 import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
 import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;

@@ -59,13 +59,18 @@ public class GithubController {
     githubService.insertGithubOrganizationIsNotExist(organization);
     List<GithubRepository> repositories = githubService.fetchRepositoriesByURL(organization.getRepos_url());
     repositories.stream().forEach(repo -> {
-      githubService.insertGithubOwnerIsNotExist(repo.getOwner());
-      githubService.insertRepository(repo);
-      RepositoryDTO tempSoltion = new RepositoryDTO();
-      tempSoltion.branch = repo.getDefault_branch();
-      tempSoltion.language = repo.getLanguage();
-      tempSoltion.projectName = repo.getName();
-      tempSoltion.url = repo.getSvn_url();
+      if (repo.getLanguage().equals("Java")) {
+        githubService.insertGithubOwnerIsNotExist(repo.getOwner());
+        githubService.insertRepository(repo);
+        sonarQubeService.createSonarQubeProject(repo.getName());
+        sonarQubeService.updateWebhookPropertieSonarQubeProject(repo.getName());
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {
+          System.err.format("IOException: %s%n", e);
+        }
+        sonarQubeService.scanRepository(repo.getName(), repo.getLanguage());
+      }
     });
     return githubService.getAllOrganization();
   }

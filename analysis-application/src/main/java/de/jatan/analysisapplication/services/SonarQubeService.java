@@ -18,7 +18,6 @@ public class SonarQubeService {
 
   private String applicationPath = System.getProperty("user.dir");
   private String repositoryPath = "/src/main/resources/repositories/";
-  private String codeLanguage;
   private String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
   private String username = "admin";
   private String password = "admin";
@@ -30,11 +29,10 @@ public class SonarQubeService {
   }
 
   public void scanRepository(String projectName, String language) {
-    this.codeLanguage = language;
     try {
       String repositoryFolder = applicationPath + repositoryPath;
       String projectPath = repositoryFolder + projectName;
-      createSonarPropertiesFile(repositoryFolder, projectName);
+      createSonarPropertiesFile(repositoryFolder, projectName, language);
       scanRespositoryInSonarqube(projectPath);
       removeRepositoryFromPath(projectPath);
     } catch (FileNotFoundException e) {
@@ -75,7 +73,8 @@ public class SonarQubeService {
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.redirectErrorStream(true);
     processBuilder.directory(new File(path));
-    processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties");
+    processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties");// redirect error stream to
+    processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     executeProcesses(processBuilder);
   }
 
@@ -83,10 +82,10 @@ public class SonarQubeService {
     FileSystemUtils.deleteRecursively(new File(path));
   }
 
-  private void createSonarPropertiesFile(String path, String projectName) throws IOException {
+  private void createSonarPropertiesFile(String path, String projectName, String language) throws IOException {
     File sonarPropertiesFile = new File(path + "/" + projectName + "/" + "sonar-project.properties");
     BufferedWriter writer = new BufferedWriter(new FileWriter(sonarPropertiesFile, true));
-    writeSonarProperties(writer, projectName);
+    writeSonarProperties(writer, projectName, language);
   }
 
   private boolean checkIfProjectExist(String projectName) {
@@ -107,13 +106,12 @@ public class SonarQubeService {
     return (responseEntity.getBody().getWebhooks().length == 0) ? false : true;
   }
 
-  private void writeSonarProperties(BufferedWriter writer, String projectName) throws IOException {
-    if (this.codeLanguage.equals("Java")) {
-      writer.write("sonar.sources=src");
-      writer.newLine();
+  private void writeSonarProperties(BufferedWriter writer, String projectName, String language) throws IOException {
+    if (language.equals("Java")) {
       writer.write("sonar.java.binaries=.");
       writer.newLine();
     }
+
     writer.write("sonar.projectKey=" + projectName);
     writer.newLine();
     writer.close();
