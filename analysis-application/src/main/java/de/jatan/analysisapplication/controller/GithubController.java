@@ -1,21 +1,28 @@
 package de.jatan.analysisapplication.controller;
 
 import java.util.List;
+
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.jatan.analysisapplication.Database.entities.OrganizationInformationEntry;
-import de.jatan.analysisapplication.Database.entities.RepositoryInformationEntity;
-import de.jatan.analysisapplication.Database.entities.UserInformationEntry;
+import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
+import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;
+import de.jatan.analysisapplication.Database.entities.GithubUserEntry;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
-import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
+import de.jatan.analysisapplication.controller.DTO.RepositoryDTO;
 import de.jatan.analysisapplication.services.GithubService;
+import de.jatan.analysisapplication.services.SonarQubeService;
 
 @RestController
 @RequestMapping(path = "/github")
@@ -24,29 +31,42 @@ public class GithubController {
   @Autowired
   private GithubService githubService;
 
+  @Autowired
+  private SonarQubeService sonarQubeService;
+
   @GetMapping(path = "/repository", params = "login")
   @ResponseBody
-  public Iterable<RepositoryInformationEntity> getRepositoryByLogin(@RequestParam String login) {
-    List<GithubRepository> repositories = githubService.fetchRepositories(login);
+  public Iterable<GithubRepositoryEntity> getRepositoryByLogin(@RequestParam String login) {
+    List<GithubRepository> repositories = githubService.fetchRepositoriesByUsername(login);
     repositories.stream().forEach(repo -> {
-      GithubOwner owner = repo.getOwner();
-      if (!githubService.isOwnerExists(owner)) {
-        githubService.insertGithubOwner(owner);
-      }
+      githubService.insertGithubOwnerIsNotExist(repo.getOwner());
       githubService.insertRepository(repo);
     });
     return githubService.getAllRepositories();
   }
 
   @GetMapping(path = "/user")
-  public UserInformationEntry getGithubUser(@RequestParam String login) {
+  public GithubUserEntry getGithubUser(@RequestParam String login) {
     GithubUser user = githubService.fetchGithubUser(login);
     return githubService.insertUserInformation(user);
   }
 
   @GetMapping(path = "/organization")
-  public OrganizationInformationEntry getGithubOrganization(@RequestParam String organizationName) {
+  @ResponseStatus(value = HttpStatus.OK)
+  public Iterable<GithubOrganizationEntry> getGithubOrganization(@RequestParam String organizationName)
+      throws InvalidRemoteException, TransportException, GitAPIException, InterruptedException {
     GithubOrganization organization = githubService.fetchOrganizations(organizationName);
-    return githubService.insertGithubOrgansiation(organization);
+    githubService.insertGithubOrganizationIsNotExist(organization);
+    List<GithubRepository> repositories = githubService.fetchRepositoriesByURL(organization.getRepos_url());
+    repositories.stream().forEach(repo -> {
+      githubService.insertGithubOwnerIsNotExist(repo.getOwner());
+      githubService.insertRepository(repo);
+      RepositoryDTO tempSoltion = new RepositoryDTO();
+      tempSoltion.branch = repo.getDefault_branch();
+      tempSoltion.language = repo.getLanguage();
+      tempSoltion.projectName = repo.getName();
+      tempSoltion.url = repo.getSvn_url();
+    });
+    return githubService.getAllOrganization();
   }
 }

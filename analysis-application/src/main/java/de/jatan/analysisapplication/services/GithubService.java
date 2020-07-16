@@ -14,14 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
 
+import antlr.StringUtils;
 import de.jatan.analysisapplication.Database.entities.GithubOwnerEntity;
-import de.jatan.analysisapplication.Database.entities.OrganizationInformationEntry;
-import de.jatan.analysisapplication.Database.entities.RepositoryInformationEntity;
-import de.jatan.analysisapplication.Database.entities.UserInformationEntry;
+import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
+import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;
+import de.jatan.analysisapplication.Database.entities.GithubUserEntry;
 import de.jatan.analysisapplication.Database.repositories.GithubOwnerRepository;
-import de.jatan.analysisapplication.Database.repositories.OrganizationInformationRepository;
-import de.jatan.analysisapplication.Database.repositories.RepositoryInformationRepository;
-import de.jatan.analysisapplication.Database.repositories.UserInformationEntryRepository;
+import de.jatan.analysisapplication.Database.repositories.GithubOrganizationRepository;
+import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
+import de.jatan.analysisapplication.Database.repositories.GithubUserRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
@@ -35,11 +36,11 @@ public class GithubService {
   @Autowired
   private GithubOwnerRepository githubOwnerRepository;
   @Autowired
-  private UserInformationEntryRepository userInformationRepository;
+  private GithubUserRepository githubUserRepository;
   @Autowired
-  private RepositoryInformationRepository repositoryInformationRepository;
+  private GithubRepositoryRepository githubRepositoryRepository;
   @Autowired
-  private OrganizationInformationRepository organizationRepository;
+  private GithubOrganizationRepository githubOrganizationRepository;
 
   public GithubUser fetchGithubUser(String githubUsername) {
     RestTemplate restTemplate = new RestTemplate();
@@ -48,10 +49,16 @@ public class GithubService {
     return githubUser;
   }
 
-  public List<GithubRepository> fetchRepositories(String githubUsername) {
+  public List<GithubRepository> fetchRepositoriesByUsername(String githubUsername) {
     RestTemplate restTemplate = new RestTemplate();
     List<GithubRepository> list = Arrays.asList(restTemplate
         .getForObject("https://api.github.com/users/" + githubUsername + " /repos", GithubRepository[].class));
+    return list;
+  }
+
+  public List<GithubRepository> fetchRepositoriesByURL(String url) {
+    RestTemplate restTemplate = new RestTemplate();
+    List<GithubRepository> list = Arrays.asList(restTemplate.getForObject(url, GithubRepository[].class));
     return list;
   }
 
@@ -77,11 +84,15 @@ public class GithubService {
 
   public GithubOwnerEntity insertRepository(GithubRepository repo) {
     GithubOwnerEntity githubOwner = githubOwnerRepository.findByLogin(repo.getOwner().getLogin()).get(0);
-    RepositoryInformationEntity repository = new RepositoryInformationEntity();
-    repository.setDescription(repo.getDescription());
+    GithubOrganizationEntry githubOrganization = githubOrganizationRepository.findByLogin(repo.getOwner().getLogin())
+        .get(0);
+    GithubRepositoryEntity repository = new GithubRepositoryEntity();
+    repository.setDescription(modifyStringnWhenToForLongDatabase(repo.getDescription()));
     repository.setUrl(repo.getUrl());
     repository.setName(repo.getName());
+    repository.setGithub_organization(githubOrganization);
     repository.setGithub_owner(githubOwner);
+    githubOrganization.addRepository(repository);
     githubOwner.addRepository(repository);
     return githubOwnerRepository.save(githubOwner);
   }
@@ -93,19 +104,45 @@ public class GithubService {
     return githubOwnerRepository.save(githubOwner);
   }
 
-  public UserInformationEntry insertUserInformation(GithubUser user) {
-    UserInformationEntry userEntry = new UserInformationEntry();
+  public GithubUserEntry insertUserInformation(GithubUser user) {
+    GithubUserEntry userEntry = new GithubUserEntry();
     userEntry.setName(user.getName());
     userEntry.setLogin(user.getLogin());
-    return userInformationRepository.save(userEntry);
+    return githubUserRepository.save(userEntry);
   }
 
-  public OrganizationInformationEntry insertGithubOrgansiation(GithubOrganization organization) {
-    OrganizationInformationEntry n = new OrganizationInformationEntry();
+  public GithubOrganizationEntry insertGithubOrganization(GithubOrganization organization) {
+    GithubOrganizationEntry n = new GithubOrganizationEntry();
     n.setDescription(organization.getDescription());
     n.setUrl(organization.getUrl());
     n.setLogin(organization.getLogin());
-    return organizationRepository.save(n);
+    return githubOrganizationRepository.save(n);
+  }
+
+  public String modifyStringnWhenToForLongDatabase(String str) {
+    if (str != null && str.length() > 100) {
+      return str.substring(0, 100);
+    }
+    return str;
+  }
+
+  public void insertGithubOwnerIsNotExist(GithubOwner owner) {
+    if (!isOwnerExists(owner)) {
+      insertGithubOwner(owner);
+    }
+  }
+
+  public void insertGithubOrganizationIsNotExist(GithubOrganization organization) {
+    if (!isOrganizationExists(organization)) {
+      insertGithubOrganization(organization);
+    }
+  }
+
+  private boolean isOrganizationExists(GithubOrganization organization) {
+    if (githubOrganizationRepository.findByLogin(organization.getLogin()).size() > 0) {
+      return true;
+    }
+    return false;
   }
 
   public boolean isOwnerExists(GithubOwner owner) {
@@ -115,12 +152,15 @@ public class GithubService {
     return false;
   }
 
-  public Iterable<UserInformationEntry> getUserAllInformation() {
-    return userInformationRepository.findAll();
+  public Iterable<GithubOrganizationEntry> getAllOrganization() {
+    return githubOrganizationRepository.findAll();
   }
 
-  public Iterable<RepositoryInformationEntity> getAllRepositories() {
-    return repositoryInformationRepository.findAll();
+  public Iterable<GithubUserEntry> getUserAllInformation() {
+    return githubUserRepository.findAll();
   }
 
+  public Iterable<GithubRepositoryEntity> getAllRepositories() {
+    return githubRepositoryRepository.findAll();
+  }
 }

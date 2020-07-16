@@ -1,7 +1,7 @@
 package de.jatan.analysisapplication.controller;
 
-import de.jatan.analysisapplication.Database.entities.UserInformationEntry;
-import de.jatan.analysisapplication.Database.repositories.UserInformationEntryRepository;
+import de.jatan.analysisapplication.Database.entities.GithubUserEntry;
+import de.jatan.analysisapplication.Database.repositories.GithubUserRepository;
 import de.jatan.analysisapplication.controller.DTO.UserInformationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   @Autowired
-  private UserInformationEntryRepository userRepository;
+  private GithubUserRepository userRepository;
 
   @PostMapping(path = "/add")
-  public @ResponseBody UserInformationEntry addNewUser(@RequestBody UserInformationDTO uDto) {
-    UserInformationEntry n = new UserInformationEntry();
+  public @ResponseBody GithubUserEntry addNewUser(@RequestBody UserInformationDTO uDto) {
+    GithubUserEntry n = new GithubUserEntry();
     n.setName(uDto.name);
     n.setLogin(uDto.login);
     userRepository.save(n);
@@ -28,9 +28,9 @@ public class UserController {
   }
 
   @GetMapping(path = "/all")
-  public @ResponseBody Iterable<UserInformationEntry> getAllUsers() {
+  public @ResponseBody Iterable<GithubUserEntry> getAllUsers() {
     return userRepository.findAll();
   }
- 
+
 
 }

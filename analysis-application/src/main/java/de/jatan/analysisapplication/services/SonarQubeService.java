@@ -108,7 +108,7 @@ public class SonarQubeService {
   }
 
   private void writeSonarProperties(BufferedWriter writer, String projectName) throws IOException {
-    if (this.codeLanguage.equals("java")) {
+    if (this.codeLanguage.equals("Java")) {
       writer.write("sonar.sources=src");
       writer.newLine();
       writer.write("sonar.java.binaries=.");
