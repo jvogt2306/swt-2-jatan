@@ -25,7 +25,6 @@ import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubUser;
-import de.jatan.analysisapplication.controller.DTO.RepositoryDTO;
 import io.github.cdimascio.dotenv.Dotenv;
 
 @Service

@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.jatan.analysisapplication.controller.DTO.RepositoryDTO;
 import de.jatan.analysisapplication.services.GithubService;
 import de.jatan.analysisapplication.services.SonarQubeService;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/jatan")
