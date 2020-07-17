@@ -1,5 +1,7 @@
 package de.jatan.analysisapplication.controller;
 
+import java.util.List;
+
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -10,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import de.jatan.analysisapplication.controller.DTO.RepositoryDTO;
 import de.jatan.analysisapplication.services.GithubService;
 import de.jatan.analysisapplication.services.SonarQubeService;
+import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
+import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,13 +47,30 @@ public class AnalysisController {
     // Möglicher Zustande: created, analysing, finished, error
   }
 
-  @PostMapping(value = "/createAnalysis")
+  @GetMapping(path = "/createAnalysis")
   @ResponseStatus(value = HttpStatus.OK)
-  public void postMethodName(@RequestBody RepositoryDTO entity)
+  public void getGithubOrganization(@RequestParam String organizationName)
       throws InvalidRemoteException, TransportException, GitAPIException, InterruptedException {
-    githubService.cloneRepository(entity);
-    sonarQubeService.createSonarQubeProject(entity.projectName);
-    sonarQubeService.updateWebhookPropertieSonarQubeProject(entity.projectName);
-    sonarQubeService.scanRepository(entity.projectName, entity.language);
+    GithubOrganization organization = githubService.fetchOrganizations(organizationName);
+    githubService.insertGithubOrganizationIsNotExist(organization);
+    List<GithubRepository> repositories = githubService.fetchRepositoriesByURL(organization.getRepos_url());
+
+    repositories.stream().forEach(repo -> {
+      if (repo.getLanguage().equals("Java")) {
+        System.out.println("---->" + repo.getName());
+        githubService.insertGithubOwnerIsNotExist(repo.getOwner());
+        githubService.insertRepository(repo);
+
+        try {
+          githubService.cloneRepository(repo);
+        } catch (GitAPIException e1) {
+          e1.printStackTrace();
+        }
+        sonarQubeService.createSonarQubeProject(repo.getName());
+        sonarQubeService.updateWebhookPropertieSonarQubeProject(repo.getName());
+        sonarQubeService.scanRepository(repo.getName(), repo.getLanguage());
+      }
+    });
   }
+
 }

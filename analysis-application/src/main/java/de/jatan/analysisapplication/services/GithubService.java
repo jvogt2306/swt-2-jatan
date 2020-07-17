@@ -67,15 +67,16 @@ public class GithubService {
     return organization;
   }
 
-  public boolean cloneRepository(RepositoryDTO dto) throws InvalidRemoteException, TransportException, GitAPIException {
+  public boolean cloneRepository(GithubRepository repository)
+      throws InvalidRemoteException, TransportException, GitAPIException {
     Dotenv dotenv = Dotenv.load();
     String githubUsername = dotenv.get("githubUsername");
     String githubPassword = dotenv.get("githubPassword");
     String applicationPath = System.getProperty("user.dir");
     FileSystemUtils
-        .deleteRecursively(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName));
-    Git.cloneRepository().setURI(dto.url)
-        .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + dto.projectName))
+        .deleteRecursively(new File(applicationPath + "/src/main/resources/repositories/" + repository.getName()));
+    Git.cloneRepository().setURI(repository.getSvn_url())
+        .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + repository.getName()))
         .setCredentialsProvider(new UsernamePasswordCredentialsProvider(githubUsername, githubPassword)).call();
     return true;
   }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
 import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;
 import de.jatan.analysisapplication.Database.entities.GithubUserEntry;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
@@ -53,25 +52,10 @@ public class GithubController {
 
   @GetMapping(path = "/organization")
   @ResponseStatus(value = HttpStatus.OK)
-  public Iterable<GithubOrganizationEntry> getGithubOrganization(@RequestParam String organizationName)
+  public void getGithubOrganization(@RequestParam String organizationName)
       throws InvalidRemoteException, TransportException, GitAPIException, InterruptedException {
-    GithubOrganization organization = githubService.fetchOrganizations(organizationName);
-    githubService.insertGithubOrganizationIsNotExist(organization);
-    List<GithubRepository> repositories = githubService.fetchRepositoriesByURL(organization.getRepos_url());
-    repositories.stream().forEach(repo -> {
-      if (repo.getLanguage().equals("Java")) {
-        githubService.insertGithubOwnerIsNotExist(repo.getOwner());
-        githubService.insertRepository(repo);
-        sonarQubeService.createSonarQubeProject(repo.getName());
-        sonarQubeService.updateWebhookPropertieSonarQubeProject(repo.getName());
-        try {
-          Thread.sleep(5000);
-        } catch (InterruptedException e) {
-          System.err.format("IOException: %s%n", e);
-        }
-        sonarQubeService.scanRepository(repo.getName(), repo.getLanguage());
-      }
-    });
-    return githubService.getAllOrganization();
+    // GithubOrganization organization =
+    // githubService.fetchOrganizations(organizationName);
+    githubService.getAllOrganization();
   }
 }
