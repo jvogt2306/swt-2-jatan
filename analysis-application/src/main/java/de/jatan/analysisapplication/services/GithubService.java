@@ -105,6 +105,12 @@ public class GithubService {
     return str;
   }
 
+  public void insertGithubRepositoryIsNotExist(GithubRepository repo) {
+    if (!isRepositoryExists(repo)) {
+      insertRepository(repo);
+    }
+  }
+
   public void insertGithubOwnerIsNotExist(GithubOwner owner) {
     if (!isOwnerExists(owner)) {
       insertGithubOwner(owner);
@@ -115,6 +121,13 @@ public class GithubService {
     if (!isOrganizationExists(organization)) {
       insertGithubOrganization(organization);
     }
+  }
+
+  private boolean isRepositoryExists(GithubRepository repository) {
+    if (githubRepositoryRepository.findByName(repository.getName()).size() > 0) {
+      return true;
+    }
+    return false;
   }
 
   private boolean isOrganizationExists(GithubOrganization organization) {

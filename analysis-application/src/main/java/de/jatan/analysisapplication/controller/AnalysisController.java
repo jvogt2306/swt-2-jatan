@@ -57,8 +57,7 @@ public class AnalysisController {
       if (repo.getLanguage().equals("Java")) {
         System.out.println("---->" + repo.getName());
         githubService.insertGithubOwnerIsNotExist(repo.getOwner());
-        githubService.insertRepository(repo);
-
+        githubService.insertGithubRepositoryIsNotExist(repo);
         try {
           githubService.cloneRepository(repo);
         } catch (GitAPIException e1) {
