@@ -69,9 +69,8 @@ public class GithubService {
   }
 
   public GithubOwnerEntity insertRepository(GithubRepository repo) {
-    GithubOwnerEntity githubOwner = githubOwnerRepository.findByLogin(repo.getOwner().getLogin()).get(0);
-    GithubOrganizationEntry githubOrganization = githubOrganizationRepository.findByLogin(repo.getOwner().getLogin())
-        .get(0);
+    GithubOwnerEntity githubOwner = githubOwnerRepository.findByLogin(repo.getOwner().getLogin());
+    GithubOrganizationEntry githubOrganization = githubOrganizationRepository.findByLogin(repo.getOwner().getLogin());
     GithubRepositoryEntity repository = new GithubRepositoryEntity();
     repository.setDescription(modifyStringnWhenToForLongDatabase(repo.getDescription()));
     repository.setUrl(repo.getUrl());
@@ -124,21 +123,21 @@ public class GithubService {
   }
 
   private boolean isRepositoryExists(GithubRepository repository) {
-    if (githubRepositoryRepository.findByName(repository.getName()).size() > 0) {
+    if (githubRepositoryRepository.findByName(repository.getName()) != null) {
       return true;
     }
     return false;
   }
 
   private boolean isOrganizationExists(GithubOrganization organization) {
-    if (githubOrganizationRepository.findByLogin(organization.getLogin()).size() > 0) {
+    if (githubOrganizationRepository.findByLogin(organization.getLogin()) != null) {
       return true;
     }
     return false;
   }
 
   public boolean isOwnerExists(GithubOwner owner) {
-    if (githubOwnerRepository.findByLogin(owner.getLogin()).size() > 0) {
+    if (githubOwnerRepository.findByLogin(owner.getLogin()) != null) {
       return true;
     }
     return false;

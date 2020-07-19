@@ -2,7 +2,7 @@
 package de.jatan.analysisapplication.controller;
 
 import de.jatan.analysisapplication.Domain.Model.*;
-import de.jatan.analysisapplication.services.SonarResultsService;
+import de.jatan.analysisapplication.services.SonarQubeResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,19 +20,19 @@ public class SonarQubeController {
   @Autowired
   private SonarQubeService sonarQubeService;
   @Autowired
-  private SonarResultsService sonarResultsService;
+  private SonarQubeResultsService sonarQubeResultsService;
 
   @PostMapping(path = "/hook")
   public void printSonarQubeStack(@RequestBody SonarQubeResponse sonarbody) {
-    SonarQubeConditions[] metrices = sonarbody.getQualityGate().getConditions();
-    for (int i = 0; i < metrices.length; i++) {
-      System.out.println("SonarResults: " + metrices[i].getMetric() + " And the value is: " + metrices[i].getValue());
-    }
-    SonarResults sonarResults = sonarResultsService.getResults(sonarbody);
-    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    for (int i = 0; i < measures.length; i++) {
-      System.out.println("SonarResults: " + measures[i].getMetric() + " And the value is: " + measures[i].getValue());
-    }
+
+    // SonarQubeConditions[] metrices = sonarbody.getQualityGate().getConditions();
+    /*
+     * for (int i = 0; i < metrices.length; i++) {
+     * System.out.println("SonarResults: " + metrices[i].getMetric() +
+     * " And the value is: " + metrices[i].getValue()); }
+     */
+    SonarResults sonarResults = sonarQubeResultsService.getResults(sonarbody);
+    sonarQubeResultsService.saveSonarQubeMeasures(sonarResults);
   }
 
   @GetMapping(path = "/create")

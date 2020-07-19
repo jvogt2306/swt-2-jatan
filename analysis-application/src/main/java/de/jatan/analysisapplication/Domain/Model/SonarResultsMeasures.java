@@ -1,45 +1,28 @@
 package de.jatan.analysisapplication.Domain.Model;
 
 public class SonarResultsMeasures {
-    private String metric;
+  private String metric;
 
-    private String bestValue;
+  private String value;
 
-    private String value;
+  public String getMetric() {
+    return metric;
+  }
 
-    public String getMetric ()
-    {
-        return metric;
-    }
+  public void setMetric(String metric) {
+    this.metric = metric;
+  }
 
-    public void setMetric (String metric)
-    {
-        this.metric = metric;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public String getBestValue ()
-    {
-        return bestValue;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    public void setBestValue (String bestValue)
-    {
-        this.bestValue = bestValue;
-    }
-
-    public String getValue ()
-    {
-        return value;
-    }
-
-    public void setValue (String value)
-    {
-        this.value = value;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [metric = "+metric+", bestValue = "+bestValue+", value = "+value+"]";
-    }
+  @Override
+  public String toString() {
+    return "ClassPojo [metric = " + metric + ", value = " + value + "]";
+  }
 }
