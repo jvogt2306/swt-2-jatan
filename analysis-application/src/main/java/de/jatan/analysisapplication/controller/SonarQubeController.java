@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.jatan.analysisapplication.services.SonarQubeService;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping(path = "/sonarqube")
@@ -26,15 +25,16 @@ public class SonarQubeController {
   @PostMapping(path = "/hook")
   public void printSonarQubeStack(@RequestBody SonarQubeResponse sonarbody) {
     SonarQubeConditions[] metrices = sonarbody.getQualityGate().getConditions();
-    for (int i= 0; i< metrices.length;i++){
-      System.out.println("SonarResults: "+ metrices[i].getMetric()+" And the value is: "+ metrices[i].getValue());
+    for (int i = 0; i < metrices.length; i++) {
+      System.out.println("SonarResults: " + metrices[i].getMetric() + " And the value is: " + metrices[i].getValue());
     }
     SonarResults sonarResults = sonarResultsService.getResults(sonarbody);
     SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    for (int i = 0; i < measures.length; i++){
-      System.out.println("SonarResults: "+ measures[i].getMetric()+" And the value is: "+ measures[i].getValue());
+    for (int i = 0; i < measures.length; i++) {
+      System.out.println("SonarResults: " + measures[i].getMetric() + " And the value is: " + measures[i].getValue());
     }
   }
+
   @GetMapping(path = "/create")
   public void getHealth(@RequestParam String projectName, String language) {
     sonarQubeService.createSonarQubeProject(projectName);
