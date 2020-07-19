@@ -16,15 +16,12 @@ import org.springframework.web.client.RestTemplate;
 import de.jatan.analysisapplication.Database.entities.GithubOwnerEntity;
 import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
 import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;
-import de.jatan.analysisapplication.Database.entities.GithubUserEntry;
 import de.jatan.analysisapplication.Database.repositories.GithubOwnerRepository;
 import de.jatan.analysisapplication.Database.repositories.GithubOrganizationRepository;
 import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
-import de.jatan.analysisapplication.Database.repositories.GithubUserRepository;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
-import de.jatan.analysisapplication.Domain.Model.GithubUser;
 import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
@@ -33,18 +30,9 @@ public class GithubService {
   @Autowired
   private GithubOwnerRepository githubOwnerRepository;
   @Autowired
-  private GithubUserRepository githubUserRepository;
-  @Autowired
   private GithubRepositoryRepository githubRepositoryRepository;
   @Autowired
   private GithubOrganizationRepository githubOrganizationRepository;
-
-  public GithubUser fetchGithubUser(String githubUsername) {
-    RestTemplate restTemplate = new RestTemplate();
-    GithubUser githubUser = restTemplate.getForObject("https://api.github.com/users/" + githubUsername,
-        GithubUser.class);
-    return githubUser;
-  }
 
   public List<GithubRepository> fetchRepositoriesByUsername(String githubUsername) {
     RestTemplate restTemplate = new RestTemplate();
@@ -102,13 +90,6 @@ public class GithubService {
     return githubOwnerRepository.save(githubOwner);
   }
 
-  public GithubUserEntry insertUserInformation(GithubUser user) {
-    GithubUserEntry userEntry = new GithubUserEntry();
-    userEntry.setName(user.getName());
-    userEntry.setLogin(user.getLogin());
-    return githubUserRepository.save(userEntry);
-  }
-
   public GithubOrganizationEntry insertGithubOrganization(GithubOrganization organization) {
     GithubOrganizationEntry n = new GithubOrganizationEntry();
     n.setDescription(organization.getDescription());
@@ -154,11 +135,8 @@ public class GithubService {
     return githubOrganizationRepository.findAll();
   }
 
-  public Iterable<GithubUserEntry> getUserAllInformation() {
-    return githubUserRepository.findAll();
-  }
-
   public Iterable<GithubRepositoryEntity> getAllRepositories() {
     return githubRepositoryRepository.findAll();
   }
+
 }
