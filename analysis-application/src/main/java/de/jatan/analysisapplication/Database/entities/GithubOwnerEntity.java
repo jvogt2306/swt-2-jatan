@@ -23,7 +23,7 @@ public class GithubOwnerEntity {
   private String url;
   private String login;
 
-  @OneToMany(mappedBy = "github_owner", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "github_owner", cascade = CascadeType.MERGE)
   private List<GithubRepositoryEntity> repositories = new ArrayList<>();
 
   public void addRepository(GithubRepositoryEntity repository) {

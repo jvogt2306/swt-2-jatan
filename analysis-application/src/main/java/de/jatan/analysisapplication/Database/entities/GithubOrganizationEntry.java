@@ -13,10 +13,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "organization_information")
+@Table(name = "github_organization")
 public class GithubOrganizationEntry {
 
-  @OneToMany(mappedBy = "github_organization", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "github_organization", cascade = CascadeType.MERGE)
   private List<GithubRepositoryEntity> repositories = new ArrayList<>();
 
   @Id
