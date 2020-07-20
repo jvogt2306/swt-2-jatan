@@ -21,6 +21,7 @@ public class GithubRepositoryEntity {
   private String description;
   private String url;
   private String name;
+  private String language;
 
   @ManyToOne
   @JoinColumn(name = "fk_github_owner")
@@ -74,5 +75,13 @@ public class GithubRepositoryEntity {
    */
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getLanguage() {
+    return this.language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
   }
 }

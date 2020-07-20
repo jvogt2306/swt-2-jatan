@@ -6,6 +6,3 @@ import de.jatan.analysisapplication.Database.repositories.Interfaces.ReadOnlyRep
 public interface JatanAnalysisDetailsRepository extends ReadOnlyRepository<JatanAnalysisDetailsEntry, Integer> {
 
 }
-
-
-

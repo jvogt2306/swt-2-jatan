@@ -12,12 +12,14 @@ import org.hibernate.annotations.Immutable;
 @Table(name = "jatan_analysis_details")
 public class JatanAnalysisDetailsEntry {
 
-  @Id
   @Column(name = "login")
   private String login;
-
+  @Id
   @Column(name = "name")
   private String name;
+
+  @Column(name = "language")
+  private String language;
 
   @Column(name = "bugs")
   private String bugs;
@@ -52,6 +54,10 @@ public class JatanAnalysisDetailsEntry {
 
   public String getName() {
     return this.name;
+  }
+
+  public String getLanguage() {
+    return this.language;
   }
 
   public String getBugs() {

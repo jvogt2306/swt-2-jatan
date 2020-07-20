@@ -77,6 +77,7 @@ public class GithubService {
     repository.setName(repo.getName());
     repository.setGithub_organization(githubOrganization);
     repository.setGithub_owner(githubOwner);
+    repository.setLanguage(repo.getLanguage());
     githubOrganization.addRepository(repository);
     githubOwner.addRepository(repository);
     return githubOwnerRepository.save(githubOwner);
