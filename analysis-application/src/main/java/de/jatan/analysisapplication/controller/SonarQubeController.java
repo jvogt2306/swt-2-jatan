@@ -24,13 +24,6 @@ public class SonarQubeController {
 
   @PostMapping(path = "/hook")
   public void printSonarQubeStack(@RequestBody SonarQubeResponse sonarbody) {
-
-    // SonarQubeConditions[] metrices = sonarbody.getQualityGate().getConditions();
-    /*
-     * for (int i = 0; i < metrices.length; i++) {
-     * System.out.println("SonarResults: " + metrices[i].getMetric() +
-     * " And the value is: " + metrices[i].getValue()); }
-     */
     SonarResults sonarResults = sonarQubeResultsService.getResults(sonarbody);
     sonarQubeResultsService.saveSonarQubeMeasures(sonarResults);
   }

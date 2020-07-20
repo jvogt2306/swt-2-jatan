@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.jatan.analysisapplication.services.GithubService;
+import de.jatan.analysisapplication.services.JatanAnalysisService;
 import de.jatan.analysisapplication.services.SonarQubeService;
+import de.jatan.analysisapplication.Database.entities.JatanAnalysisDetailsEntry;
+import de.jatan.analysisapplication.Database.entities.JatanAnalysisEntry;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
-
-import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping(path = "/jatan")
@@ -28,21 +29,17 @@ public class AnalysisController {
   private GithubService githubService;
   @Autowired
   private SonarQubeService sonarQubeService;
+  @Autowired
+  private JatanAnalysisService jatanAnalysisService;
 
-  @GetMapping(path = "/searchAnalysis", params = "repository")
-  public void getAnalysisByRepository(@RequestParam String repository) {
-    // Array von Repositories
+  @GetMapping(path = "/searchAnalysis")
+  public Iterable<JatanAnalysisEntry> getAllCompanyAnalysis() {
+    return jatanAnalysisService.getAllCompaniesAnalysis();
   }
 
-  @PostMapping(path = "/searchAnalysis", params = "organisation")
-  public void getAnalysisByOrganisation(@RequestParam String organisation) {
-    // Array von Organsiationen
-  }
-
-  @GetMapping(path = "/statusAnalysis")
-  public void getStatusOfAnalysis(@RequestParam String id) {
-    // Aktuellen Status der Analyse erfragen:
-    // Möglicher Zustande: created, analysing, finished, error
+  @GetMapping(path = "/searchAnalysisDetails")
+  public Iterable<JatanAnalysisDetailsEntry> getAllCompanyAnalysisDetails() {
+    return jatanAnalysisService.getAllCompanyAnalysisDetails();
   }
 
   @GetMapping(path = "/createAnalysis")

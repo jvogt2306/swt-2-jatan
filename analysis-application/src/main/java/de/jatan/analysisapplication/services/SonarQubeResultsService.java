@@ -1,6 +1,5 @@
 package de.jatan.analysisapplication.services;
 
-import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;
 import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
 import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
 import de.jatan.analysisapplication.Database.repositories.SonarQubeMeasuresRepository;
@@ -89,26 +88,27 @@ public class SonarQubeResultsService {
     return ncloc;
   }
 
-  public void saveSonarQubeMeasures(SonarResults sonarResults) {
+  public SonarqubeMeasuresEntity saveSonarQubeMeasures(SonarResults sonarResults) {
     Optional<SonarqubeMeasuresEntity> entityInDB = sonarQubeMeasuresRepository
         .findByProject(sonarResults.getComponent().getKey());
     if (entityInDB.isEmpty()) {
-      insertMeasuresIntoDatabase(sonarResults);
+      return insertMeasuresIntoDatabase(sonarResults);
     } else {
-      updateMeasuresInDatabase(entityInDB.get(), sonarResults);
+      return updateMeasuresInDatabase(entityInDB.get(), sonarResults);
     }
   }
 
-  private void updateMeasuresInDatabase(SonarqubeMeasuresEntity sonarqubeMeasuresEntity, SonarResults sonarResults) {
+  private SonarqubeMeasuresEntity updateMeasuresInDatabase(SonarqubeMeasuresEntity sonarqubeMeasuresEntity,
+      SonarResults sonarResults) {
     sonarqubeMeasuresEntity.setBugs(getBugs(sonarResults));
     sonarqubeMeasuresEntity.setCode_smells(getCode_smells(sonarResults));
     sonarqubeMeasuresEntity.setCoverage(getCoverage(sonarResults));
     sonarqubeMeasuresEntity.setNcloc(getLinesOfCode(sonarResults));
     sonarqubeMeasuresEntity.setSqale_index(getSqale_index(sonarResults));
-    sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
+    return sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
   }
 
-  public void insertMeasuresIntoDatabase(SonarResults sonarResults) {
+  public SonarqubeMeasuresEntity insertMeasuresIntoDatabase(SonarResults sonarResults) {
     SonarqubeMeasuresEntity measures = new SonarqubeMeasuresEntity();
     measures.setBugs(getBugs(sonarResults));
     measures.setCode_smells(getCode_smells(sonarResults));
@@ -117,6 +117,6 @@ public class SonarQubeResultsService {
     measures.setSqale_index(getSqale_index(sonarResults));
     measures.setProject(sonarResults.getComponent().getName());
     measures.setRepository(githubRepositoryRepository.findByName(sonarResults.getComponent().getKey()));
-    sonarQubeMeasuresRepository.save(measures);
+    return sonarQubeMeasuresRepository.save(measures);
   }
 }
