@@ -12,20 +12,24 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
 public class SonarQubeService {
 
-  private String applicationPath = System.getProperty("user.dir");
-  private String repositoryPath = "/src/main/resources/repositories/";
-  private String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
-  private String username = "admin";
-  private String password = "admin";
+  private final String applicationPath = System.getProperty("user.dir");
+  private final String repositoryPath = "/src/main/resources/repositories/";
+  private final String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
+  private final Dotenv dotenv = Dotenv.load();
+  private String sonarUser = dotenv.get("sonarUser");
+  private String sonarPassword = dotenv.get("sonarPassword");
+
+  final String sonarUsername = dotenv.get("githubUsername");
   private String sonarURL = "http://localhost:" + 7000;
   private final RestTemplate restTemplate;
 
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
-    this.restTemplate = restTemplateBuilder.basicAuthentication(username, password).build();
+    this.restTemplate = restTemplateBuilder.basicAuthentication(sonarUser, sonarPassword).build();
   }
 
   public void scanRepository(String projectName, String language) {
@@ -78,8 +82,8 @@ public class SonarQubeService {
     executeProcesses(processBuilder);
   }
 
-  private void removeRepositoryFromPath(String path) throws IOException {
-    FileSystemUtils.deleteRecursively(new File(path));
+  public boolean removeRepositoryFromPath(String path) throws IOException {
+    return FileSystemUtils.deleteRecursively(new File(path));
   }
 
   private void createSonarPropertiesFile(String path, String projectName, String language) throws IOException {
@@ -106,7 +110,8 @@ public class SonarQubeService {
     return (responseEntity.getBody().getWebhooks().length == 0) ? false : true;
   }
 
-  private void writeSonarProperties(BufferedWriter writer, String projectName, String language) throws IOException {
+  private boolean writeSonarProperties(BufferedWriter writer, String projectName, String language) throws IOException {
+
     if (language.equals("Java")) {
       writer.write("sonar.java.binaries=.");
       writer.newLine();
@@ -115,6 +120,7 @@ public class SonarQubeService {
     writer.write("sonar.projectKey=" + projectName);
     writer.newLine();
     writer.close();
+    return true;
   }
 
   private boolean executeProcesses(ProcessBuilder processBuilder) throws IOException, InterruptedException {

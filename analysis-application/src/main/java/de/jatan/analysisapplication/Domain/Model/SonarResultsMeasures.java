@@ -1,28 +1,14 @@
 package de.jatan.analysisapplication.Domain.Model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@SuppressWarnings("unused")
 public class SonarResultsMeasures {
   private String metric;
 
   private String value;
 
-  public String getMetric() {
-    return metric;
-  }
-
-  public void setMetric(String metric) {
-    this.metric = metric;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  @Override
-  public String toString() {
-    return "ClassPojo [metric = " + metric + ", value = " + value + "]";
-  }
 }

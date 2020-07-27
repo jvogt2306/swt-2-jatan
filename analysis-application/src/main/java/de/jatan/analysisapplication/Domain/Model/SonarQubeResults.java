@@ -1,21 +1,11 @@
 package de.jatan.analysisapplication.Domain.Model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@Data
+@NoArgsConstructor
+@SuppressWarnings("unused")
 public class SonarQubeResults {
     private SonarResultsComponents component;
 
-    public SonarResultsComponents getComponent ()
-    {
-        return component;
-    }
-
-    public void setComponent (SonarResultsComponents component)
-    {
-        this.component = component;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [component = "+component+"]";
-    }
 }
