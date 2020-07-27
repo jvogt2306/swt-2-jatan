@@ -12,8 +12,9 @@ sourceCompatibility = '11'
 
 sonarqube {
     properties {
-        property 'sonar.projectName', 'Jatan - Analysis-Application'
-    }
+      property 'sonar.projectName', 'Jatan - Analysis-Application'
+      property "sonar.projectKey", "org.sonarqube:java-gradle-simple"
+      }
 }
 
 configurations {
@@ -37,6 +38,10 @@ dependencies {
   compile 'io.github.cdimascio:java-dotenv:5.2.1'
   compile("mysql:mysql-connector-java")
 	runtimeOnly 'com.h2database:h2'
+	compileOnly 'org.projectlombok:lombok:1.18.12'
+	annotationProcessor 'org.projectlombok:lombok:1.18.12'
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
   testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
