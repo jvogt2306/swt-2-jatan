@@ -1,9 +1,9 @@
-version: '3'
+version: '3.4'
 services:
  jatan-db:
     image: mariadb
     networks:
-      - jatan_network_database
+      - jatan_external
     restart: always
     deploy:
       placement:
@@ -19,9 +19,9 @@ services:
       - MYSQL_PASSWORD=jatan
       - MYSQL_DATABASE=jatan
  jatan-gitlab:
-    image: 'gitlab/gitlab-ce:latest'
+    image: 'gitlab/gitlab-ce:12.10.14-ce.0'
     networks:
-      - jatan_network
+      - jatan_internal
     restart: always
     deploy:
       placement:
@@ -59,7 +59,7 @@ services:
       - PMA_ARBITRARY=1
     restart: always
     networks:
-      - jatan_network
+      - jatan_external
     deploy:
       placement:
         constraints:
@@ -68,19 +68,11 @@ services:
      - "6007:80"
     volumes:
       - jatan_phpmyadmin:/sessions
-# adminer:
-#     image: adminer
-#     networks:
-#       - jatan_network_database
-#     restart: always
-#     ports:
-#       - 6007:8080
  jatan-jenkins:
-    container_name: jatan_jenkins
-#    image: jatan_jenkins
-    image: jenkins/jenkins:lts
+    image: jenkins/jenkins:jdk11 
+    #:lts
     networks:
-      - jatan_network
+      - jatan_internal
     deploy:
       placement:
         constraints:
@@ -92,30 +84,35 @@ services:
       - "6006:8080"
     volumes:
       - jatan_jenkins_data_dir:/var/jenkins_home
-# jatan-reverse:
-#    container_name: reverse
-#    networks:
-#      - jatan_network
-#    hostname: 10.2.119.11
-#    image: nginx
-#    ports:
-#      - 6008:80
-#    volumes:
-#      - jatan_reverse_proxy_data_dir:/etc/nginx
-#      - jatan_www:/etc/nginx/html
- jatan-sonarqube:
-    image: sonarqube
+      - jatan_tomcat:/tomcat
+ jatan-tomcat:
+    image: bitnami/tomcat:latest
     networks:
-      - jatan_network
+      - jatan_external
+    ports:
+      - "6015:8080"
+    environment:
+      - TOMCAT_USERNAME=jatan
+      - TOMCAT_PASSWORD=j4t4nj4t4n
+      - TOMCAT_ALLOW_REMOTE_MANAGEMENT=1
+    volumes:
+      - jatan_tomcat:/bitnami
+ jatan-sonarqube:
+    image: bitnami/sonarqube:latest
+    networks:
+      - jatan_internal
     deploy:
       placement:
         constraints:
-          - "node.id==ogue8pwiten6wyr6r47km6jkj"
+          - "node.id==gzryrk3hljee4gn58uz31rd59"
     restart: always
     environment:
-      - SONAR_JDBC_USERNAME=sonarqube
-      - SONAR_JDBC_PASSWORD=bhkjca12eufas
-      - SONAR_JDBC_URL=jdbc:postgresql://jatan-sonarqube-db:5432/sonarqube
+      - SONARQUBE_DATABASE_USER=sonarqube
+      - SONARQUBE_DATABASE_NAME=sonarqube
+      - SONARQUBE_DATABASE_PASSWORD=bhkjca12eufas
+      - POSTGRESQL_HOST=jatan-sonarqube-db
+      - POSTGRESQL_ROOT_USER=sonarqube
+      - SONARQUBE_ELASTICSEARCH_JAVA_ADD_OPTS= -Dnode.store.allow_mmapfs=false
     ports:
       - "6009:9000"
       - "6010:9092"
@@ -124,14 +121,15 @@ services:
       - jatan_sonarqube_data_dir_data:/opt/sonarqube/data
       - jatan_sonarqube_data_dir_ext:/opt/sonarqube/extensions
       - jatan_sonarqube_data_dir_plugins:/opt/sonarqube/lib/bundled-plugins
+      - jatan_sonarqube_bitname:/bitnami
  jatan-sonarqube-db:
     image: postgres
     networks:
-      - jatan_network
+      - jatan_internal
     deploy:
       placement:
         constraints:
-          - "node.id==ogue8pwiten6wyr6r47km6jkj"
+          - "node.id==gzryrk3hljee4gn58uz31rd59"
     restart: always
     environment:
       - POSTGRES_USER=sonarqube
@@ -143,11 +141,19 @@ services:
       - jatan_sonarqube_data_dir_db:/var/lib/postgresql
       # This needs explicit mapping due to https://github.com/docker-library/postgres/blob/4e48e3228a30763913ece952c611e5e9b95c8759/Dockerfile.te$
       - jatan_sonarqube_data_dir_db_data:/var/lib/postgresql/data
-
+ jatan-analysis-spring:
+    image: jatan/jatan_analysis
+    ports:
+      - "6020:8080"
+    restart: always
+    depends_on:
+       - jatan-db
+    networks:
+       - jatan_external
 networks:
-  jatan_network:
+  jatan_internal:
     driver: overlay
-  jatan_network_database:
+  jatan_external:
     driver: overlay
 
 volumes:
@@ -157,7 +163,7 @@ volumes:
   jatan_gitlab_data_dir_data:
   jatan_jenkins_data_dir:
   jatan_reverse_proxy_data_dir:
-  jatan_www:
+  jatan_tomcat:
   jatan_sonarqube_data_dir_conf:
   jatan_sonarqube_data_dir_data:
   jatan_sonarqube_data_dir_ext:
@@ -165,3 +171,4 @@ volumes:
   jatan_sonarqube_data_dir_db:
   jatan_sonarqube_data_dir_db_data:
   jatan_phpmyadmin:
+  jatan_sonarqube_bitname:
