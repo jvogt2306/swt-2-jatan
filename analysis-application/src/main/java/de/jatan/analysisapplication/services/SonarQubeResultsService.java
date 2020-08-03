@@ -3,6 +3,7 @@ package de.jatan.analysisapplication.services;
 import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
 import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
 import de.jatan.analysisapplication.Database.repositories.SonarQubeMeasuresRepository;
+import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarResults;
 import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
@@ -10,11 +11,20 @@ import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class SonarQubeResultsService {
+
+  private String sonarUser = "jatan";
+  private String sonarPassword = "j4t4nj4t4n";
+  private String sonarURL = "http://10.2.119.11:6009";
+  private final RestTemplate restTemplate;
 
   @Autowired
   private SonarQubeMeasuresRepository sonarQubeMeasuresRepository;
@@ -22,15 +32,21 @@ public class SonarQubeResultsService {
   @Autowired
   private GithubRepositoryRepository githubRepositoryRepository;
 
+  public SonarQubeResultsService(RestTemplateBuilder restTemplateBuilder) {
+    this.restTemplate = restTemplateBuilder.basicAuthentication(sonarUser, sonarPassword).build();
+  }
+
   public SonarResults getResults(SonarQubeResponse sonarbody) {
     String projectKey = sonarbody.getProject().getKey();
 
-    RestTemplate restTemplate = new RestTemplate();
-    String urlSonarResults = ("http://localhost:7000/api/measures/component?component=" + projectKey);
-    SonarResults sonarResults = restTemplate.getForObject(
-        urlSonarResults + "&metricKeys=bugs,code_smells,sqale_index,coverage,ncloc,sqale_debt_ratio",
+    String searchSonarProjectEndpoint = "http://10.2.119.11:6009/api/measures/component";
+
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
+        .queryParam("component", projectKey)
+        .queryParam("metricKeys", "bugs,code_smells,sqale_index,coverage,ncloc,sqale_debt_ratio");
+    ResponseEntity<SonarResults> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
         SonarResults.class);
-    return sonarResults;
+    return responseEntity.getBody();
   }
 
   public String getCode_smells(SonarResults sonarResults) {
