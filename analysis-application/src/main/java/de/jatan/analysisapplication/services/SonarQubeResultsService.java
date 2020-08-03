@@ -21,9 +21,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class SonarQubeResultsService {
 
-  private String sonarUser = "jatan";
-  private String sonarPassword = "j4t4nj4t4n";
-  private String sonarURL = "http://10.2.119.11:6009";
+  private String sonarUser = "admin";
+  private String sonarPassword = "admin";
+
   private final RestTemplate restTemplate;
 
   @Autowired
@@ -39,7 +39,7 @@ public class SonarQubeResultsService {
   public SonarResults getResults(SonarQubeResponse sonarbody) {
     String projectKey = sonarbody.getProject().getKey();
 
-    String searchSonarProjectEndpoint = "http://10.2.119.11:6009/api/measures/component";
+    String searchSonarProjectEndpoint = "http://localhost:9000/api/measures/component";
 
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("component", projectKey)

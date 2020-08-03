@@ -12,20 +12,17 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
-import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
 public class SonarQubeService {
 
-  private final String applicationPath = System.getProperty("user.dir");
-  private final String repositoryPath = "/src/main/resources/repositories/";
+  final String applicationPath = System.getProperty("user.dir"); // System.getProperty("user.dir");
+  final String repositoryPath = "/src/main/resources/repositories/"; /// "/src/main/resources/repositories/"
   private final String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
-  private final Dotenv dotenv = Dotenv.load();
-  private String sonarUser = dotenv.get("sonarUser");
-  private String sonarPassword = dotenv.get("sonarPassword");
-
-  final String sonarUsername = dotenv.get("githubUsername");
-  private String sonarURL = "http://localhost:" + 7000;
+  // private final Dotenv dotenv = Dotenv.load();
+  private String sonarUser = "admin";
+  private String sonarPassword = "admin";
+  private String sonarURL = "http://192.168.1.32:9000";
   private final RestTemplate restTemplate;
 
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
@@ -77,7 +74,12 @@ public class SonarQubeService {
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.redirectErrorStream(true);
     processBuilder.directory(new File(path));
-    processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties");// redirect error stream to
+    processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties",
+        "-Dsonar.host.url=http://192.168.1.32:9000", "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
+    // processBuilder.command("/sonar-scanner/bin/sonar-scanner",
+    // "-Dproject.settings=./sonar-project.properties",
+    // "-Dsonar.host.url=http://192.168.1.32:9000",
+    // "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     executeProcesses(processBuilder);
   }
