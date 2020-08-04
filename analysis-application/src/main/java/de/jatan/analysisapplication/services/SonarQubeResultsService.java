@@ -3,7 +3,6 @@ package de.jatan.analysisapplication.services;
 import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
 import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
 import de.jatan.analysisapplication.Database.repositories.SonarQubeMeasuresRepository;
-import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarResults;
 import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;

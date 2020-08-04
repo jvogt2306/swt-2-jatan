@@ -16,13 +16,12 @@ import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
 @Service
 public class SonarQubeService {
 
-  final String applicationPath = System.getProperty("user.dir"); // System.getProperty("user.dir");
-  final String repositoryPath = "/src/main/resources/repositories/"; /// "/src/main/resources/repositories/"
+  private final String applicationPath = System.getProperty("user.dir"); // System.getProperty("user.dir");
+  private final String repositoryPath = "/src/main/resources/repositories/"; /// "/src/main/resources/repositories/"
   private final String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
-  // private final Dotenv dotenv = Dotenv.load();
-  private String sonarUser = "admin";
-  private String sonarPassword = "admin";
-  private String sonarURL = "http://192.168.1.32:9000";
+  private final String sonarUser = "admin";
+  private final String sonarPassword = "admin";
+  private final String sonarURL = "http://192.168.1.32:9000";
   private final RestTemplate restTemplate;
 
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
@@ -76,10 +75,6 @@ public class SonarQubeService {
     processBuilder.directory(new File(path));
     processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties",
         "-Dsonar.host.url=http://192.168.1.32:9000", "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
-    // processBuilder.command("/sonar-scanner/bin/sonar-scanner",
-    // "-Dproject.settings=./sonar-project.properties",
-    // "-Dsonar.host.url=http://192.168.1.32:9000",
-    // "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     executeProcesses(processBuilder);
   }

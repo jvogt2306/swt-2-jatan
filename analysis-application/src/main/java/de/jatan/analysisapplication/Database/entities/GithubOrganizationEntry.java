@@ -12,6 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "github_organization")
 public class GithubOrganizationEntry {
@@ -27,9 +32,6 @@ public class GithubOrganizationEntry {
   private String url;
   private String description;
   private String login;
-
-  public GithubOrganizationEntry() {
-  }
 
   public GithubOrganizationEntry(String url, String description, String login) {
     this.url = url;

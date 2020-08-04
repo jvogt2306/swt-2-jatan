@@ -9,6 +9,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "github_repository")
 public class GithubRepositoryEntity {
@@ -30,58 +35,4 @@ public class GithubRepositoryEntity {
   @ManyToOne
   @JoinColumn(name = "fk_github_organization")
   private GithubOrganizationEntry github_organization;
-
-  public void setGithub_organization(GithubOrganizationEntry github_organization) {
-    this.github_organization = github_organization;
-  };
-
-  public void setGithub_owner(GithubOwnerEntity github_owner) {
-    this.github_owner = github_owner;
-  };
-
-  public String getDescription() {
-    return this.description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public String getUrl() {
-    return this.url;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * @return Long return the id
-   */
-  public Long getId() {
-    return id;
-  }
-
-  /**
-   * @param id the id to set
-   */
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getLanguage() {
-    return this.language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
-  }
 }

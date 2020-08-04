@@ -23,8 +23,10 @@ import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class GithubService {
 
   @Autowired
