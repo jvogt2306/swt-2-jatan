@@ -12,23 +12,23 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "github_organization")
 public class GithubOrganizationEntry {
 
   @OneToMany(mappedBy = "github_organization", cascade = CascadeType.MERGE)
   private List<GithubRepositoryEntity> repositories = new ArrayList<>();
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", updatable = false, nullable = false)
   private Long id;
-
   private String url;
   private String description;
   private String login;

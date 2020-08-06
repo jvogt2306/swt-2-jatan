@@ -1,22 +1,28 @@
 package de.jatan.analysisapplication.controller;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import de.jatan.analysisapplication.exceptions.GithubOrganisationNotFoundException;
+import de.jatan.analysisapplication.services.GithubService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,14 +35,23 @@ public class AnalysisControllerTests {
   @InjectMocks
   private AnalysisController analysisController;
 
+  @Mock
+  private GithubService githubService;
+
   @Before
   public void setUp() throws Exception {
     this.mockMvc = MockMvcBuilders.standaloneSetup(analysisController).build();
+    doThrow(GithubOrganisationNotFoundException.class).when(githubService)
+        .fetchOrganizations("invalidOrganizationName");
+    /*
+     * when(githubService.fetchRepositoriesByURL("")) .thenReturn(null);
+     * when(("invalidOrganizationName")).thenReturn(value);
+     */
   }
 
   @Test
   public void should_be_true_when_application_is_running() throws Exception {
-    mockMvc.perform(MockMvcRequestBuilders.get("/health")).andDo(print())
+    mockMvc.perform(MockMvcRequestBuilders.get("/jatan/health")).andDo(MockMvcResultHandlers.print())
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().string("Status: true"));
   }
@@ -52,10 +67,20 @@ public class AnalysisControllerTests {
   }
 
   @Test
-  public void should_not_throw_exception_when_create_analysis() {
-    // @GetMapping(path="/createAnalysis"
+  public void should_not_throw_exception_when_create_analysis() throws Exception {
+    /*
+     * mockMvc .perform(
+     * MockMvcRequestBuilders.get("/jatan/createAnalysis").param("organizationName",
+     * "validOrganizationName")) .andExpect(MockMvcResultMatchers.status().isOk())
+     */
   }
 
-
-  
+  @Test
+  public void should_throw_GithubOrganisationNotFoundException_when_not_valid_organizationname() throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/jatan/createAnalysis").param("organizationName", "invalidOrganizationName"))
+        .andExpect(MockMvcResultMatchers.status().isNotFound())
+        .andExpect(result -> assertTrue(result.getResolvedException() instanceof GithubOrganisationNotFoundException));
+  }
 }

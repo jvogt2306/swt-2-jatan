@@ -12,6 +12,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import de.jatan.analysisapplication.Database.entities.GithubOwnerEntity;
 import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
@@ -22,6 +23,7 @@ import de.jatan.analysisapplication.Database.repositories.GithubRepositoryReposi
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
+import de.jatan.analysisapplication.exceptions.GithubOrganisationNotFoundException;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 
@@ -49,11 +51,16 @@ public class GithubService {
     return list;
   }
 
-  public GithubOrganization fetchOrganizations(String organizationName) {
-    RestTemplate restTemplate = new RestTemplate();
-    GithubOrganization organization = restTemplate.getForObject("https://api.github.com/orgs/" + organizationName,
-        GithubOrganization.class);
-    return organization;
+  public GithubOrganization fetchOrganizations(String organizationName) throws GithubOrganisationNotFoundException {
+    try {
+      RestTemplate restTemplate = new RestTemplate();
+      GithubOrganization organization = restTemplate.getForObject("https://api.github.com/orgs/" + organizationName,
+          GithubOrganization.class);
+      return organization;
+    } catch (RestClientException e) {
+      throw new GithubOrganisationNotFoundException(
+          "The organization " + organizationName + " cant be found in Github");
+    }
   }
 
   public boolean cloneRepository(GithubRepository repository)
@@ -107,22 +114,25 @@ public class GithubService {
     return str;
   }
 
-  public void insertGithubRepositoryIsNotExist(GithubRepository repo) {
+  public boolean insertGithubRepositoryIsNotExist(GithubRepository repo) {
     if (!isRepositoryExists(repo)) {
       insertRepository(repo);
     }
+    return true;
   }
 
-  public void insertGithubOwnerIsNotExist(GithubOwner owner) {
+  public boolean insertGithubOwnerIsNotExist(GithubOwner owner) {
     if (!isOwnerExists(owner)) {
       insertGithubOwner(owner);
     }
+    return true;
   }
 
-  public void insertGithubOrganizationIsNotExist(GithubOrganization organization) {
+  public boolean insertGithubOrganizationIsNotExist(GithubOrganization organization) {
     if (!isOrganizationExists(organization)) {
       insertGithubOrganization(organization);
     }
+    return true;
   }
 
   private boolean isRepositoryExists(GithubRepository repository) {

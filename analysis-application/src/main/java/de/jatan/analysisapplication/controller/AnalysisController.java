@@ -19,6 +19,7 @@ import de.jatan.analysisapplication.Database.entities.JatanAnalysisDetailsEntry;
 import de.jatan.analysisapplication.Database.entities.JatanAnalysisEntry;
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
+import de.jatan.analysisapplication.exceptions.GithubOrganisationNotFoundException;
 
 @RestController
 @RequestMapping(path = "/jatan")
@@ -45,8 +46,9 @@ public class AnalysisController {
 
   @GetMapping(path = "/createAnalysis")
   @ResponseStatus(value = HttpStatus.OK)
-  public void getGithubOrganization(@RequestParam String organizationName)
-      throws InvalidRemoteException, TransportException, GitAPIException, InterruptedException {
+  public void getGithubOrganization(@RequestParam String organizationName) throws InvalidRemoteException,
+      TransportException, GitAPIException, InterruptedException, GithubOrganisationNotFoundException {
+
     GithubOrganization organization = githubService.fetchOrganizations(organizationName);
     githubService.insertGithubOrganizationIsNotExist(organization);
     List<GithubRepository> repositories = githubService.fetchRepositoriesByURL(organization.getRepos_url());

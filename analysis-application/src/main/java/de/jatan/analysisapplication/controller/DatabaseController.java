@@ -36,5 +36,4 @@ public class DatabaseController {
   public Iterable<GithubOrganizationEntry> getOwners() {
     return githubService.getAllOrganization();
   }
-
 }

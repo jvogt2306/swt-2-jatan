@@ -1,10 +1,12 @@
 package de.jatan.analysisapplication.Domain.Model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class GithubRepository {
   private String stargazers_count;
   private String pushed_at;
