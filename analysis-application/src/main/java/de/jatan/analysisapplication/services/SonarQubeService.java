@@ -28,7 +28,7 @@ public class SonarQubeService {
     this.restTemplate = restTemplateBuilder.basicAuthentication(sonarUser, sonarPassword).build();
   }
 
-  public void scanRepository(String projectName, String language) {
+  public boolean scanRepository(String projectName, String language) {
     try {
       String repositoryFolder = applicationPath + repositoryPath;
       String projectPath = repositoryFolder + projectName;
@@ -44,6 +44,7 @@ public class SonarQubeService {
     } catch (NullPointerException e) {
       e.printStackTrace();
     }
+    return true;
   }
 
   public boolean createSonarQubeProject(String projectName) {

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import de.jatan.analysisapplication.services.GithubService;
 import de.jatan.analysisapplication.services.JatanAnalysisService;
 import de.jatan.analysisapplication.services.SonarQubeService;
@@ -33,11 +32,13 @@ public class AnalysisController {
   private JatanAnalysisService jatanAnalysisService;
 
   @GetMapping(path = "/searchAnalysis")
+  @ResponseStatus(value = HttpStatus.OK)
   public Iterable<JatanAnalysisEntry> getAllCompanyAnalysis() {
     return jatanAnalysisService.getAllCompaniesAnalysis();
   }
 
   @GetMapping(path = "/searchAnalysisDetails")
+  @ResponseStatus(value = HttpStatus.OK)
   public Iterable<JatanAnalysisDetailsEntry> getAllCompanyAnalysisDetails() {
     return jatanAnalysisService.getAllCompanyAnalysisDetails();
   }
@@ -67,4 +68,9 @@ public class AnalysisController {
     });
   }
 
+  @GetMapping(path = "/health")
+  @ResponseStatus(value = HttpStatus.OK)
+  public String health() {
+    return "Status: " + true;
+  }
 }
