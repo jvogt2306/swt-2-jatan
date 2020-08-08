@@ -10,18 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import de.jatan.analysisapplication.Domain.Model.SonarQubeProject;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
 
 @Service
 public class SonarQubeService {
 
-  private final String applicationPath = System.getProperty("user.dir"); // System.getProperty("user.dir");
-  private final String repositoryPath = "/src/main/resources/repositories/"; /// "/src/main/resources/repositories/"
-  private final String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
-  private final String sonarUser = "admin";
-  private final String sonarPassword = "admin";
-  private final String sonarURL = "http://192.168.1.32:9000";
+  private final static String applicationPath = System.getProperty("user.dir"); // System.getProperty("user.dir");
+  private final static String repositoryPath = "/src/main/resources/repositories/"; /// "/src/main/resources/repositories/"
+  private final static String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
+  private final static String sonarUser = "admin";
+  private final static String sonarPassword = "admin";
+  private final static String sonarURL = "http://192.168.1.32:9000";
   private final RestTemplate restTemplate;
 
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
@@ -80,6 +82,15 @@ public class SonarQubeService {
     executeProcesses(processBuilder);
   }
 
+  public boolean removeRepositoryFromSonarQube(SonarQubeProject project) {
+    String deleteSonarProjectEndpoint = sonarURL + "/api/projects/delete";
+    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(deleteSonarProjectEndpoint).queryParam("project",
+        project.getKey());
+    ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
+        Object.class);
+    return (responseEntity.getStatusCode() == HttpStatus.OK) || false;
+  }
+
   public boolean removeRepositoryFromPath(String path) throws IOException {
     return FileSystemUtils.deleteRecursively(new File(path));
   }
@@ -127,4 +138,5 @@ public class SonarQubeService {
     process.destroy();
     return true;
   }
+
 }

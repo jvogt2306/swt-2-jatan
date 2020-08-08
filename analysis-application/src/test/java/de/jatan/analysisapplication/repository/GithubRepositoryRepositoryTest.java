@@ -18,7 +18,7 @@ import de.jatan.analysisapplication.helper.GithubTestModelsHelper;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class GithubRepositoryTest {
+public class GithubRepositoryRepositoryTest {
 
   @MockBean
   private GithubRepositoryRepository mockGithubRepositoryRepository;

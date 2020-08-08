@@ -10,6 +10,5 @@ public class GithubOrganisationNotFoundException extends Exception {
 
   public GithubOrganisationNotFoundException(String errorMessage) {
     super(errorMessage);
-
   }
 }

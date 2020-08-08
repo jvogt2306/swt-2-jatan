@@ -5,10 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Immutable;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 @Entity
-@Immutable
 @Table(name = "jatan_analysis_details")
 public class JatanAnalysisDetailsEntry {
 
@@ -47,49 +49,4 @@ public class JatanAnalysisDetailsEntry {
 
   @Column(name = "TECHNICAL_DEPT_PER_LINE")
   private double technicalDeptPerLine;
-
-  public String getLogin() {
-    return this.login;
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public String getLanguage() {
-    return this.language;
-  }
-
-  public String getBugs() {
-    return this.bugs;
-  }
-
-  public String getCodeSmells() {
-    return this.codeSmells;
-  }
-
-  public String getCoverage() {
-    return this.coverage;
-  }
-
-  public String getLinesOfCode() {
-    return this.linesOfCode;
-  }
-
-  public String getTechnicalDept() {
-    return this.technicalDept;
-  }
-
-  public double getCodeSmellsPerLine() {
-    return this.codeSmellsPerLine;
-  }
-
-  public double getCoveragePerLine() {
-    return this.coveragePerLine;
-  }
-
-  public double getTechnicalDeptPerLine() {
-    return this.technicalDeptPerLine;
-  }
-
 }

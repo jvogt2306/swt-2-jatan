@@ -18,7 +18,7 @@ import de.jatan.analysisapplication.Database.repositories.JatanAnalysisRepositor
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class AnalysisRepositoryTest {
+public class JatanAnalysisRepositoryTest {
 
   @MockBean
   private JatanAnalysisRepository mockJatanAnalysisRepository;
@@ -27,19 +27,14 @@ public class AnalysisRepositoryTest {
   public void setUp() {
     JatanAnalysisEntry mockEntry = new JatanAnalysisEntry();
     mockEntry.setLogin("login");
-
     mockEntry.setBugs(22.22);
     mockEntry.setBugsPerLine(22.22);
-
     mockEntry.setCoverage(22.22);
     mockEntry.setCoveragePerLine(2);
-
     mockEntry.setCodeSmells(22.22);
     mockEntry.setCodeSmellsPerLine(2);
-
     mockEntry.setTechnicalDept(2);
     mockEntry.setTechnicalDeptPerLine(22.22);
-
     when(mockJatanAnalysisRepository.findById(1)).thenReturn(Optional.of(mockEntry));
   }
 
