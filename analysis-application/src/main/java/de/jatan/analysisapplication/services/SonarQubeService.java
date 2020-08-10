@@ -26,15 +26,16 @@ public class SonarQubeService {
   private final static String sonarURL = "http://192.168.1.32:9000";
   private final RestTemplate restTemplate;
 
+  public final static String repositoryFolderAbsolute = applicationPath + repositoryPath;
+
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
     this.restTemplate = restTemplateBuilder.basicAuthentication(sonarUser, sonarPassword).build();
   }
 
   public boolean scanRepository(String projectName, String language) {
     try {
-      String repositoryFolder = applicationPath + repositoryPath;
-      String projectPath = repositoryFolder + projectName;
-      createSonarPropertiesFile(repositoryFolder, projectName, language);
+      String projectPath = repositoryFolderAbsolute + projectName;
+      createSonarPropertiesFile(repositoryFolderAbsolute, projectName, language);
       scanRespositoryInSonarqube(projectPath);
       removeRepositoryFromPath(projectPath);
     } catch (FileNotFoundException e) {
@@ -72,7 +73,7 @@ public class SonarQubeService {
     return (responseEntity.getStatusCode() == HttpStatus.OK) ? true : false;
   }
 
-  private void scanRespositoryInSonarqube(String path) throws InterruptedException, IOException {
+  public boolean scanRespositoryInSonarqube(String path) throws InterruptedException, IOException {
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.redirectErrorStream(true);
     processBuilder.directory(new File(path));
@@ -80,6 +81,7 @@ public class SonarQubeService {
         "-Dsonar.host.url=http://192.168.1.32:9000", "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     executeProcesses(processBuilder);
+    return true;
   }
 
   public boolean removeRepositoryFromSonarQube(SonarQubeProject project) {
@@ -95,13 +97,14 @@ public class SonarQubeService {
     return FileSystemUtils.deleteRecursively(new File(path));
   }
 
-  private void createSonarPropertiesFile(String path, String projectName, String language) throws IOException {
+  public boolean createSonarPropertiesFile(String path, String projectName, String language) throws IOException {
     File sonarPropertiesFile = new File(path + "/" + projectName + "/" + "sonar-project.properties");
     BufferedWriter writer = new BufferedWriter(new FileWriter(sonarPropertiesFile, true));
     writeSonarProperties(writer, projectName, language);
+    return true;
   }
 
-  private boolean checkIfProjectExist(String projectName) {
+  public boolean checkIfProjectExist(String projectName) {
     String searchSonarProjectEndpoint = sonarURL + "api/projects/search";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("projects", projectName);
@@ -110,7 +113,7 @@ public class SonarQubeService {
     return (responseEntity.getBody().getComponents().length == 0) ? false : true;
   }
 
-  private boolean checkIfWebhookExist(String projectName) {
+  public boolean checkIfWebhookExist(String projectName) {
     String searchSonarProjectEndpoint = sonarURL + "api/webhooks/list";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint).queryParam("project",
         projectName);
@@ -119,7 +122,7 @@ public class SonarQubeService {
     return (responseEntity.getBody().getWebhooks().length == 0) ? false : true;
   }
 
-  private boolean writeSonarProperties(BufferedWriter writer, String projectName, String language) throws IOException {
+  public boolean writeSonarProperties(BufferedWriter writer, String projectName, String language) throws IOException {
 
     if (language.equals("Java")) {
       writer.write("sonar.java.binaries=.");
@@ -132,11 +135,10 @@ public class SonarQubeService {
     return true;
   }
 
-  private boolean executeProcesses(ProcessBuilder processBuilder) throws IOException, InterruptedException {
+  public boolean executeProcesses(ProcessBuilder processBuilder) throws IOException, InterruptedException {
     Process process = processBuilder.start();
     process.waitFor();
     process.destroy();
     return true;
   }
-
 }

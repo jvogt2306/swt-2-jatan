@@ -41,16 +41,15 @@ public class SonarQubeResultsService {
     String searchSonarProjectEndpoint = "http://localhost:9000/api/measures/component";
 
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
-        .queryParam("component", projectKey)
-        .queryParam("metricKeys", "bugs,code_smells,sqale_index,coverage,ncloc,sqale_debt_ratio");
+        .queryParam("component", projectKey).queryParam("metricKeys",
+            "bugs,code_smells,sqale_index,ncloc,sqale_debt_ratio,vulnerabilities,security_rating,duplicated_lines,complexity,violations,reliability_rating");
     ResponseEntity<SonarResults> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
         SonarResults.class);
     return responseEntity.getBody();
   }
 
-  public String getCode_smells(SonarResults sonarResults) {
-    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    String code_smells = new String(" ");
+  public String getCode_smells(SonarResultsMeasures[] measures) {
+    String code_smells = new String("");
     for (int i = 0; i < measures.length; i++) {
       if (measures[i].getMetric().equals("code_smells")) {
         code_smells = measures[i].getValue();
@@ -59,9 +58,8 @@ public class SonarQubeResultsService {
     return code_smells;
   }
 
-  public String getBugs(SonarResults sonarResults) {
-    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    String bugs = new String(" ");
+  public String getBugs(SonarResultsMeasures[] measures) {
+    String bugs = new String("");
     for (int i = 0; i < measures.length; i++) {
       if (measures[i].getMetric().equals("bugs")) {
         bugs = measures[i].getValue();
@@ -70,9 +68,8 @@ public class SonarQubeResultsService {
     return bugs;
   }
 
-  public String getSqale_index(SonarResults sonarResults) {
-    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    String sqale_index = new String(" ");
+  public String getSqale_index(SonarResultsMeasures[] measures) {
+    String sqale_index = new String("");
     for (int i = 0; i < measures.length; i++) {
       if (measures[i].getMetric().equals("sqale_index")) {
         sqale_index = measures[i].getValue();
@@ -81,26 +78,74 @@ public class SonarQubeResultsService {
     return sqale_index;
   }
 
-  public String getCoverage(SonarResults sonarResults) {
-    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    String coverage = new String(" ");
-    for (int i = 0; i < measures.length; i++) {
-      if (measures[i].getMetric().equals("coverage")) {
-        coverage = measures[i].getValue();
-      }
-    }
-    return coverage;
-  }
-
-  public String getLinesOfCode(SonarResults sonarResults) {
-    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-    String ncloc = new String(" ");
+  public String getLinesOfCode(SonarResultsMeasures[] measures) {
+    String ncloc = new String("");
     for (int i = 0; i < measures.length; i++) {
       if (measures[i].getMetric().equals("ncloc")) {
         ncloc = measures[i].getValue();
       }
     }
     return ncloc;
+  }
+
+  public String getVulnerabilities(SonarResultsMeasures[] measures) {
+    String vulnerabilities = new String("");
+    for (int i = 0; i < measures.length; i++) {
+      if (measures[i].getMetric().equals("ncloc")) {
+        vulnerabilities = measures[i].getValue();
+      }
+    }
+    return vulnerabilities;
+  }
+
+  public String getSecurityRating(SonarResultsMeasures[] measures) {
+    String securityRating = new String("");
+    for (int i = 0; i < measures.length; i++) {
+      if (measures[i].getMetric().equals("security_rating")) {
+        securityRating = measures[i].getValue();
+      }
+    }
+    return securityRating;
+  }
+
+  public String getDuplicatedLines(SonarResultsMeasures[] measures) {
+    String duplicatedLines = new String("");
+    for (int i = 0; i < measures.length; i++) {
+      if (measures[i].getMetric().equals("duplicated_lines")) {
+        duplicatedLines = measures[i].getValue();
+      }
+    }
+    return duplicatedLines;
+  }
+
+  public String getComplexity(SonarResultsMeasures[] measures) {
+    String complexity = new String("");
+    for (int i = 0; i < measures.length; i++) {
+      if (measures[i].getMetric().equals("complexity")) {
+        complexity = measures[i].getValue();
+      }
+    }
+    return complexity;
+  }
+
+  public String getViolations(SonarResultsMeasures[] measures) {
+    String violations = new String("");
+    for (int i = 0; i < measures.length; i++) {
+      if (measures[i].getMetric().equals("violations")) {
+        violations = measures[i].getValue();
+      }
+    }
+    return violations;
+  }
+
+  public String getReliabilityRating(SonarResultsMeasures[] measures) {
+    String reliabilityRating = new String("");
+    for (int i = 0; i < measures.length; i++) {
+      if (measures[i].getMetric().equals("reliability_rating")) {
+        reliabilityRating = measures[i].getValue();
+      }
+    }
+    return reliabilityRating;
   }
 
   public SonarqubeMeasuresEntity saveSonarQubeMeasures(SonarResults sonarResults) {
@@ -115,23 +160,36 @@ public class SonarQubeResultsService {
 
   private SonarqubeMeasuresEntity updateMeasuresInDatabase(SonarqubeMeasuresEntity sonarqubeMeasuresEntity,
       SonarResults sonarResults) {
-    sonarqubeMeasuresEntity.setBugs(getBugs(sonarResults));
-    sonarqubeMeasuresEntity.setCode_smells(getCode_smells(sonarResults));
-    sonarqubeMeasuresEntity.setCoverage(getCoverage(sonarResults));
-    sonarqubeMeasuresEntity.setNcloc(getLinesOfCode(sonarResults));
-    sonarqubeMeasuresEntity.setSqale_index(getSqale_index(sonarResults));
+    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
+    sonarqubeMeasuresEntity.setBugs(getBugs(measures));
+    sonarqubeMeasuresEntity.setCode_smells(getCode_smells(measures));
+    sonarqubeMeasuresEntity.setNcloc(getLinesOfCode(measures));
+    sonarqubeMeasuresEntity.setSqale_index(getSqale_index(measures));
+    sonarqubeMeasuresEntity.setVulnerabilities(getVulnerabilities(measures));
+    sonarqubeMeasuresEntity.setSecurity_rating(getSecurityRating(measures));
+    sonarqubeMeasuresEntity.setDuplicated_lines(getDuplicatedLines(measures));
+    sonarqubeMeasuresEntity.setComplexity(getComplexity(measures));
+    sonarqubeMeasuresEntity.setViolations(getViolations(measures));
+    sonarqubeMeasuresEntity.setReliability_rating(getReliabilityRating(measures));
     return sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
   }
 
   public SonarqubeMeasuresEntity insertMeasuresIntoDatabase(SonarResults sonarResults) {
-    SonarqubeMeasuresEntity measures = new SonarqubeMeasuresEntity();
-    measures.setBugs(getBugs(sonarResults));
-    measures.setCode_smells(getCode_smells(sonarResults));
-    measures.setCoverage(getCoverage(sonarResults));
-    measures.setNcloc(getLinesOfCode(sonarResults));
-    measures.setSqale_index(getSqale_index(sonarResults));
-    measures.setProject(sonarResults.getComponent().getName());
-    measures.setRepository(githubRepositoryRepository.findByName(sonarResults.getComponent().getKey()));
-    return sonarQubeMeasuresRepository.save(measures);
+    SonarqubeMeasuresEntity sonarqubeMeasuresEntity = new SonarqubeMeasuresEntity();
+    SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
+
+    sonarqubeMeasuresEntity.setBugs(getBugs(measures));
+    sonarqubeMeasuresEntity.setCode_smells(getCode_smells(measures));
+    sonarqubeMeasuresEntity.setNcloc(getLinesOfCode(measures));
+    sonarqubeMeasuresEntity.setSqale_index(getSqale_index(measures));
+    sonarqubeMeasuresEntity.setVulnerabilities(getVulnerabilities(measures));
+    sonarqubeMeasuresEntity.setSecurity_rating(getSecurityRating(measures));
+    sonarqubeMeasuresEntity.setDuplicated_lines(getDuplicatedLines(measures));
+    sonarqubeMeasuresEntity.setComplexity(getComplexity(measures));
+    sonarqubeMeasuresEntity.setViolations(getViolations(measures));
+    sonarqubeMeasuresEntity.setReliability_rating(getReliabilityRating(measures));
+    sonarqubeMeasuresEntity.setProject(sonarResults.getComponent().getName());
+    sonarqubeMeasuresEntity.setRepository(githubRepositoryRepository.findByName(sonarResults.getComponent().getKey()));
+    return sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
   }
 }

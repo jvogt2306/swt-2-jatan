@@ -31,11 +31,13 @@ public class SonarqubeMeasuresEntity {
 
   private String project;
   private String sqale_index;
-  private String coverage;
   private String bugs;
   private String code_smells;
   private String ncloc;
-public Object thenReturn(SonarqubeMeasuresEntity sonarqubeMeasuresEntity) {
-	return null;
-}
+  private String vulnerabilities;
+  private String security_rating;
+  private String duplicated_lines;
+  private String complexity;
+  private String violations;
+  private String reliability_rating;
 }
