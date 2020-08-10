@@ -1,5 +1,7 @@
 package de.jatan.analysisapplication.helper;
 
+import java.io.File;
+
 import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
 import de.jatan.analysisapplication.Database.entities.GithubOwnerEntity;
 import de.jatan.analysisapplication.Database.entities.GithubRepositoryEntity;
@@ -23,7 +25,6 @@ public final class SonarQubeTestModelsHelper {
                 new SonarQubeConditions("1", "new_reliability_rating", null, null, "GREATER_THAN", "NO_VALUE"),
                 new SonarQubeConditions("1", "new_security_rating", "null", "null", "GREATER_THAN", "NO_VALUE"),
                 new SonarQubeConditions("1", "new_maintainability_rating", null, null, "GREATER_THAN", "NO_VALUE"),
-                new SonarQubeConditions("80", "new_coverage", null, null, "LESS_THAN", "NO_VALUE"),
                 new SonarQubeConditions("3", "new_duplicated_lines_density", null, null, "GREATER_THAN", "NO_VALUE") },
             "OK"),
         "http://localhost:9000", "2020-08-08T09:59:53+0000",
@@ -38,7 +39,7 @@ public final class SonarQubeTestModelsHelper {
   public final static SonarResults getValidSonarQubeResult() {
     return new SonarResults(new SonarResultsComponents(
         new SonarResultsMeasures[] { new SonarResultsMeasures("code_smells", "4"),
-            new SonarResultsMeasures("bugs", "0"), new SonarResultsMeasures("coverage", "0.0"),
+            new SonarResultsMeasures("bugs", "0"),
             new SonarResultsMeasures("sqale_debt_ratio", "4.6"), new SonarResultsMeasures("sqale_index", "32"),
             new SonarResultsMeasures("ncloc", "23") },
         "TRK", "sipgateio-basicauth-java", "AXPNlAM4POfeEGx4QfD8", "sipgateio-basicauth-java"));
@@ -70,10 +71,23 @@ public final class SonarQubeTestModelsHelper {
     sonarqubeMeasuresEntity.setSqale_index("32");
     sonarqubeMeasuresEntity.setProject("sipgateio-basicauth-java");
     sonarqubeMeasuresEntity.setNcloc("23");
-    sonarqubeMeasuresEntity.setCoverage("0.0");
     sonarqubeMeasuresEntity.setCode_smells("4");
     sonarqubeMeasuresEntity.setBugs("0");
     sonarqubeMeasuresEntity.setRepository(githubRepositoryEntity);
     return sonarqubeMeasuresEntity;
+  }
+
+  public final static ProcessBuilder getValidProcessBuilder(String path) {
+    ProcessBuilder processBuilder = new ProcessBuilder();
+    processBuilder.redirectErrorStream(true);
+    processBuilder.directory(new File(path));
+    processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties",
+        "-Dsonar.host.url=http://192.168.1.32:9000", "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
+    processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+    return processBuilder;
+  }
+
+  public static SonarQubeProject getValidSonarQubeProject() {
+    return new SonarQubeProject("TestProject", "TestProject", "https://testproject.de/sonarqube/project");
   }
 }
