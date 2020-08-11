@@ -16,12 +16,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class SonarQubeResultsService {
 
   private String sonarUser = "admin";
   private String sonarPassword = "admin";
+  @Value("${sonar.address}")
+  private String sonarAddress;
+
 
   private final RestTemplate restTemplate;
 
@@ -37,8 +41,7 @@ public class SonarQubeResultsService {
 
   public SonarResults getResults(SonarQubeResponse sonarbody) {
     String projectKey = sonarbody.getProject().getKey();
-
-    String searchSonarProjectEndpoint = "http://localhost:9000/api/measures/component";
+    String searchSonarProjectEndpoint = sonarAddress + "/api/measures/component";
 
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("component", projectKey).queryParam("metricKeys",

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.beans.factory.annotation.Value;
 
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProject;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectResponse;
@@ -20,13 +21,18 @@ public class SonarQubeService {
 
   private final static String applicationPath = System.getProperty("user.dir"); // System.getProperty("user.dir");
   private final static String repositoryPath = "/src/main/resources/repositories/"; /// "/src/main/resources/repositories/"
-  private final static String analysisSonarqubeHook = "http://192.168.1.32:8080/sonarqube/hook";
   private final static String sonarUser = "admin";
   private final static String sonarPassword = "admin";
-  private final static String sonarURL = "http://192.168.1.32:9000";
+  public final static String repositoryFolderAbsolute = applicationPath + repositoryPath;
+
   private final RestTemplate restTemplate;
 
-  public final static String repositoryFolderAbsolute = applicationPath + repositoryPath;
+  @Value("${jatan.sonar.hook}")
+  private String analysisSonarqubeHook;
+  @Value("${sonar.login}")
+  private String sonarSecurityKey;
+  @Value("${sonar.address}")
+  private String sonarAddress;
 
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
     this.restTemplate = restTemplateBuilder.basicAuthentication(sonarUser, sonarPassword).build();
@@ -53,7 +59,7 @@ public class SonarQubeService {
   public boolean createSonarQubeProject(String projectName) {
     if (checkIfProjectExist(projectName))
       return true;
-    String createSonarProjectEndpoint = sonarURL + "api/projects/create";
+    String createSonarProjectEndpoint = sonarAddress + "api/projects/create";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(createSonarProjectEndpoint)
         .queryParam("name", projectName).queryParam("project", projectName);
     ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
@@ -64,7 +70,7 @@ public class SonarQubeService {
   public boolean updateWebhookPropertieSonarQubeProject(String projectName) {
     if (checkIfWebhookExist(projectName))
       return true;
-    String createSonarWebhookEndpoint = sonarURL + "/api/webhooks/create";
+    String createSonarWebhookEndpoint = sonarAddress + "/api/webhooks/create";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(createSonarWebhookEndpoint)
         .queryParam("name", "Sonarqube-Spring").queryParam("project", projectName)
         .queryParam("url", analysisSonarqubeHook);
@@ -78,14 +84,14 @@ public class SonarQubeService {
     processBuilder.redirectErrorStream(true);
     processBuilder.directory(new File(path));
     processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties",
-        "-Dsonar.host.url=http://192.168.1.32:9000", "-Dsonar.login=cabdd35cbe9411b527a70d15c261b68055100c8d");
+        "-Dsonar.host.url=" + sonarAddress, "-Dsonar.login="+ sonarSecurityKey);
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     executeProcesses(processBuilder);
     return true;
   }
 
   public boolean removeRepositoryFromSonarQube(SonarQubeProject project) {
-    String deleteSonarProjectEndpoint = sonarURL + "/api/projects/delete";
+    String deleteSonarProjectEndpoint = sonarAddress + "/api/projects/delete";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(deleteSonarProjectEndpoint).queryParam("project",
         project.getKey());
     ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
@@ -105,7 +111,7 @@ public class SonarQubeService {
   }
 
   public boolean checkIfProjectExist(String projectName) {
-    String searchSonarProjectEndpoint = sonarURL + "api/projects/search";
+    String searchSonarProjectEndpoint = sonarAddress + "api/projects/search";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("projects", projectName);
     ResponseEntity<SonarQubeProjectResponse> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
@@ -114,7 +120,7 @@ public class SonarQubeService {
   }
 
   public boolean checkIfWebhookExist(String projectName) {
-    String searchSonarProjectEndpoint = sonarURL + "api/webhooks/list";
+    String searchSonarProjectEndpoint = sonarAddress + "api/webhooks/list";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint).queryParam("project",
         projectName);
     ResponseEntity<SonarQubeProjectWebhook> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
