@@ -75,7 +75,7 @@ public class SonarQubeServiceTest {
   public void should_return_true_when_scanRespositoryInSonarqube_successfully()
       throws IOException, InterruptedException {
     GithubRepository githubRepository = GithubTestModelsHelper.getValidTestGithubRepositoryOne();
-    String path = SonarQubeService.repositoryFolderAbsolute + githubRepository.getName();
+    String path = SonarQubeService.REPOSITORYFOLDERABSOLUTE + githubRepository.getName();
     when(sonarQubeService.scanRespositoryInSonarqube(path)).thenReturn(true);
     assertTrue(sonarQubeService.scanRespositoryInSonarqube(path));
   }
@@ -97,7 +97,7 @@ public class SonarQubeServiceTest {
 
   public void should_return_true_when_removeRepositoryFromPath_successfully() throws Exception, IOException {
     GithubRepository githubRepository = GithubTestModelsHelper.getValidTestGithubRepositoryOne();
-    String path = SonarQubeService.repositoryFolderAbsolute + githubRepository.getName();
+    String path = SonarQubeService.REPOSITORYFOLDERABSOLUTE + githubRepository.getName();
     when(sonarQubeService.removeRepositoryFromPath(path)).thenReturn(true);
     assertTrue(sonarQubeService.removeRepositoryFromPath(path));
     // public boolean removeRepositoryFromPath(String path) throws IOException }
@@ -110,7 +110,7 @@ public class SonarQubeServiceTest {
   @Test
   public void should_true_when_createSonarPropertiesFile_successfully() throws Exception, IOException {
     GithubRepository githubRepository = GithubTestModelsHelper.getValidTestGithubRepositoryOne();
-    String path = SonarQubeService.repositoryFolderAbsolute + githubRepository.getName();
+    String path = SonarQubeService.REPOSITORYFOLDERABSOLUTE + githubRepository.getName();
 
     when(sonarQubeService.createSonarPropertiesFile(path, githubRepository.getName(), githubRepository.getLanguage()))
         .thenReturn(true);
