@@ -23,8 +23,8 @@ import de.jatan.analysisapplication.Database.repositories.GithubRepositoryReposi
 import de.jatan.analysisapplication.Domain.Model.GithubOrganization;
 import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
+import de.jatan.analysisapplication.config.GlobalConfiguration;
 import de.jatan.analysisapplication.exceptions.GithubOrganisationNotFoundException;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -65,15 +65,14 @@ public class GithubService {
 
   public boolean cloneRepository(GithubRepository repository)
       throws InvalidRemoteException, TransportException, GitAPIException {
-    final Dotenv dotenv = Dotenv.load();
-    final String githubUsername = dotenv.get("githubUsername");
-    final String githubPassword = dotenv.get("githubPassword");
     final String applicationPath = System.getProperty("user.dir");
     FileSystemUtils
         .deleteRecursively(new File(applicationPath + "/src/main/resources/repositories/" + repository.getName()));
     Git.cloneRepository().setURI(repository.getSvn_url())
         .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + repository.getName()))
-        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(githubUsername, githubPassword)).call();
+        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(GlobalConfiguration.githubUsername,
+            GlobalConfiguration.githubPassword))
+        .call();
     return true;
   }
 

@@ -3,13 +3,14 @@ package de.jatan.analysisapplication.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
 import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
@@ -17,17 +18,12 @@ import de.jatan.analysisapplication.Database.repositories.SonarQubeMeasuresRepos
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarResults;
 import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
+import de.jatan.analysisapplication.config.GlobalConfiguration;
 
 @Service
+@Configuration
+@PropertySource("classpath:application.properties")
 public class SonarQubeResultsService {
-
-   @Value("${sonar.user}")
-  private String sonarUser;
-  @Value("${sonar.password}")
-  private String sonarPassword;
-  @Value("${sonar.address}")
-  private String sonarAddress;
-
 
   private final RestTemplate restTemplate;
 
@@ -38,18 +34,17 @@ public class SonarQubeResultsService {
   private GithubRepositoryRepository githubRepositoryRepository;
 
   public SonarQubeResultsService(final RestTemplateBuilder restTemplateBuilder) {
-    this.restTemplate = restTemplateBuilder.basicAuthentication(sonarUser, sonarPassword).build();
+    this.restTemplate = restTemplateBuilder.basicAuthentication("admin", "admin").build();
   }
 
   public SonarResults getResults(final SonarQubeResponse sonarbody) {
     final String projectKey = sonarbody.getProject().getKey();
-    final String searchSonarProjectEndpoint = sonarAddress + "/api/measures/component";
-
+    final String searchSonarProjectEndpoint = GlobalConfiguration.sonarAdress + "/api/measures/component";
     final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("component", projectKey).queryParam("metricKeys",
             "bugs,code_smells,sqale_index,ncloc,sqale_debt_ratio,vulnerabilities,security_rating,duplicated_lines,complexity,violations,reliability_rating");
-    final ResponseEntity<SonarResults> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, null,
-        SonarResults.class);
+    final ResponseEntity<SonarResults> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET,
+        null, SonarResults.class);
     return responseEntity.getBody();
   }
 
@@ -74,7 +69,7 @@ public class SonarQubeResultsService {
   public String getSqaleIndex(final SonarResultsMeasures[] measures) {
     for (int i = 0; i < measures.length; i++) {
       if (measures[i].getMetric().equals("sqale_index")) {
-        return  measures[i].getValue();
+        return measures[i].getValue();
       }
     }
     return "";
@@ -92,7 +87,7 @@ public class SonarQubeResultsService {
   public String getVulnerabilities(final SonarResultsMeasures[] measures) {
     for (int i = 0; i < measures.length; i++) {
       if (measures[i].getMetric().equals("vulnerabilities")) {
-      return measures[i].getValue();
+        return measures[i].getValue();
       }
     }
     return "";

@@ -6,8 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,27 +20,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProject;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
+import de.jatan.analysisapplication.config.GlobalConfiguration;
 
 @Service
+@Configuration
+@PropertySource("classpath:application.properties")
 public class SonarQubeService {
-
-  private static final String APPLICATIONPATH = System.getProperty("user.dir"); 
+  private static final String APPLICATIONPATH = System.getProperty("user.dir");
   private static final String REPOSITORYPATH = "/src/main/resources/repositories/";
-  private static final String SONARUSER = "admin";
-  private static final String SONARPASSWORD = "admin";
   public static final String REPOSITORYFOLDERABSOLUTE = APPLICATIONPATH + REPOSITORYPATH;
-
   private final RestTemplate restTemplate;
 
-  @Value("${jatan.sonar.hook}")
-  private String analysisSonarqubeHook;
-  @Value("${sonar.login}")
-  private String sonarSecurityKey;
-  @Value("${sonar.address}")
-  private String sonarAddress;
-
   public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
-    this.restTemplate = restTemplateBuilder.basicAuthentication(SONARUSER, SONARPASSWORD).build();
+    this.restTemplate = restTemplateBuilder
+        .basicAuthentication(GlobalConfiguration.sonarUser, GlobalConfiguration.sonarPassword).build();
   }
 
   public boolean scanRepository(String projectName, String language) {
@@ -61,9 +55,11 @@ public class SonarQubeService {
   }
 
   public boolean createSonarQubeProject(String projectName) {
-    if (checkIfProjectExist(projectName))
+    if (checkIfProjectExist(projectName)) {
       return true;
-    String createSonarProjectEndpoint = sonarAddress + "api/projects/create";
+    }
+
+    String createSonarProjectEndpoint = GlobalConfiguration.sonarAdress + "/api/projects/create";
     String project = projectName;
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(createSonarProjectEndpoint)
         .queryParam("name", projectName).queryParam("project", project);
@@ -75,10 +71,10 @@ public class SonarQubeService {
   public boolean updateWebhookPropertieSonarQubeProject(String projectName) {
     if (checkIfWebhookExist(projectName))
       return true;
-    String createSonarWebhookEndpoint = sonarAddress + "/api/webhooks/create";
+    String createSonarWebhookEndpoint = GlobalConfiguration.sonarAdress + "/api/webhooks/create";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(createSonarWebhookEndpoint)
         .queryParam("name", "Sonarqube-Spring").queryParam("project", projectName)
-        .queryParam("url", analysisSonarqubeHook);
+        .queryParam("url", GlobalConfiguration.jatanSonarHook);
     ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
         Object.class);
     return (responseEntity.getStatusCode() == HttpStatus.OK);
@@ -89,14 +85,14 @@ public class SonarQubeService {
     processBuilder.redirectErrorStream(true);
     processBuilder.directory(new File(path));
     processBuilder.command("sonar-scanner", "-Dproject.settings=./sonar-project.properties",
-        "-Dsonar.host.url=" + sonarAddress, "-Dsonar.login="+ sonarSecurityKey);
+        "-Dsonar.host.url=" + GlobalConfiguration.sonarAdress, "-Dsonar.login=" + GlobalConfiguration.sonarLogin);
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     executeProcesses(processBuilder);
     return true;
   }
 
   public boolean removeRepositoryFromSonarQube(SonarQubeProject project) {
-    String deleteSonarProjectEndpoint = sonarAddress + "/api/projects/delete";
+    String deleteSonarProjectEndpoint = GlobalConfiguration.sonarAdress + "/api/projects/delete";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(deleteSonarProjectEndpoint).queryParam("project",
         project.getKey());
     ResponseEntity<Object> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, null,
@@ -104,7 +100,7 @@ public class SonarQubeService {
     return (responseEntity.getStatusCode() == HttpStatus.OK);
   }
 
-  public boolean removeRepositoryFromPath(String path){
+  public boolean removeRepositoryFromPath(String path) {
     return FileSystemUtils.deleteRecursively(new File(path));
   }
 
@@ -116,21 +112,21 @@ public class SonarQubeService {
   }
 
   public boolean checkIfProjectExist(String projectName) {
-    String searchSonarProjectEndpoint = sonarAddress + "api/projects/search";
+    String searchSonarProjectEndpoint = GlobalConfiguration.sonarAdress + "/api/projects/search";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("projects", projectName);
     ResponseEntity<SonarQubeProjectResponse> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
         HttpMethod.POST, null, SonarQubeProjectResponse.class);
-    return (responseEntity.getBody().getComponents().length == 0);
+    return (responseEntity.getBody().getComponents().length != 0);
   }
 
   public boolean checkIfWebhookExist(String projectName) {
-    String searchSonarProjectEndpoint = sonarAddress + "api/webhooks/list";
+    String searchSonarProjectEndpoint = GlobalConfiguration.sonarAdress + "/api/webhooks/list";
     UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint).queryParam("project",
         projectName);
     ResponseEntity<SonarQubeProjectWebhook> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
         HttpMethod.POST, null, SonarQubeProjectWebhook.class);
-    return (responseEntity.getBody().getWebhooks().length == 0);
+    return (responseEntity.getBody().getWebhooks().length != 0);
   }
 
   public boolean writeSonarProperties(BufferedWriter writer, String projectName, String language) throws IOException {

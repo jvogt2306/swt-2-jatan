@@ -56,6 +56,7 @@ public class AnalysisController {
     repositories.stream().forEach(repo -> {
       if (repo.getLanguage() != null
           && (repo.getLanguage().equals("JavaScript") || repo.getLanguage().equals("Java"))) {
+
         githubService.insertGithubOwnerIsNotExist(repo.getOwner());
         githubService.insertGithubRepositoryIsNotExist(repo);
         try {
