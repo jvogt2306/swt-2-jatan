@@ -70,8 +70,8 @@ public class GithubService {
         .deleteRecursively(new File(applicationPath + "/src/main/resources/repositories/" + repository.getName()));
     Git.cloneRepository().setURI(repository.getSvn_url())
         .setDirectory(new File(applicationPath + "/src/main/resources/repositories/" + repository.getName()))
-        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(GlobalConfiguration.githubUsername,
-            GlobalConfiguration.githubPassword))
+        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(GlobalConfiguration.GithubUsername,
+            GlobalConfiguration.GithubPassword))
         .call();
     return true;
   }

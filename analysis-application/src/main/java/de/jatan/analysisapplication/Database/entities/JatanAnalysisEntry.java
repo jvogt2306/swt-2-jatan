@@ -21,9 +21,6 @@ public class JatanAnalysisEntry {
   @Column(name = "AVG_ORG_BUGS")
   private double bugs;
 
-  @Column(name = "AVG_ORG_COVERAGE")
-  private double coverage;
-
   @Column(name = "AVG_ORG_TECHNICAL_DEPT")
   private double technicalDept;
 
@@ -35,9 +32,6 @@ public class JatanAnalysisEntry {
 
   @Column(name = "AVG_ORG_CODE_SMELLS_PER_LINE")
   private double codeSmellsPerLine;
-
-  @Column(name = "AVG_ORG_COVERAGE_PER_LINE")
-  private double coveragePerLine;
 
   @Column(name = "AVG_ORG_TECHNICAL_DEPT_PER_LINE")
   private double technicalDeptPerLine;
@@ -56,14 +50,6 @@ public class JatanAnalysisEntry {
 
   public void setBugs(double bugs) {
     this.bugs = bugs;
-  }
-
-  public double getCoverage() {
-    return this.coverage;
-  }
-
-  public void setCoverage(double coverage) {
-    this.coverage = coverage;
   }
 
   public double getTechnicalDept() {
@@ -96,14 +82,6 @@ public class JatanAnalysisEntry {
 
   public void setCodeSmellsPerLine(double codeSmellsPerLine) {
     this.codeSmellsPerLine = codeSmellsPerLine;
-  }
-
-  public double getCoveragePerLine() {
-    return this.coveragePerLine;
-  }
-
-  public void setCoveragePerLine(double coveragePerLine) {
-    this.coveragePerLine = coveragePerLine;
   }
 
   public double getTechnicalDeptPerLine() {

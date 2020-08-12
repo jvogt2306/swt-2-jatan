@@ -29,9 +29,6 @@ public class JatanAnalysisDetailsEntry {
   @Column(name = "code_smells")
   private String codeSmells;
 
-  @Column(name = "coverage")
-  private String coverage;
-
   @Column(name = "ncloc")
   private String linesOfCode;
 
@@ -43,9 +40,6 @@ public class JatanAnalysisDetailsEntry {
 
   @Column(name = "SMELLS_PER_LINE")
   private double codeSmellsPerLine;
-
-  @Column(name = "COVERAGE_PER_LINE")
-  private double coveragePerLine;
 
   @Column(name = "TECHNICAL_DEPT_PER_LINE")
   private double technicalDeptPerLine;

@@ -12,6 +12,6 @@ ARG JAR_FILE=build/libs/analysis-application-0.0.1-SNAPSHOT.jar
 # cp spring-boot-web.jar /opt/app/app.jar
 #WORKDIR /opt/app
 COPY ${JAR_FILE} app.jar
-EXPOSE 6015
+EXPOSE 6020
 
 ENTRYPOINT ["java","-jar","app.jar"]

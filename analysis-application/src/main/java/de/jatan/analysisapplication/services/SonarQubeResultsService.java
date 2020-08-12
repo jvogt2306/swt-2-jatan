@@ -34,12 +34,13 @@ public class SonarQubeResultsService {
   private GithubRepositoryRepository githubRepositoryRepository;
 
   public SonarQubeResultsService(final RestTemplateBuilder restTemplateBuilder) {
-    this.restTemplate = restTemplateBuilder.basicAuthentication("admin", "admin").build();
+    this.restTemplate = restTemplateBuilder
+        .basicAuthentication(GlobalConfiguration.SonarUser, GlobalConfiguration.SonarPassword).build();
   }
 
   public SonarResults getResults(final SonarQubeResponse sonarbody) {
     final String projectKey = sonarbody.getProject().getKey();
-    final String searchSonarProjectEndpoint = GlobalConfiguration.sonarAdress + "/api/measures/component";
+    final String searchSonarProjectEndpoint = GlobalConfiguration.SonarAdress + "/api/measures/component";
     final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("component", projectKey).queryParam("metricKeys",
             "bugs,code_smells,sqale_index,ncloc,sqale_debt_ratio,vulnerabilities,security_rating,duplicated_lines,complexity,violations,reliability_rating");
