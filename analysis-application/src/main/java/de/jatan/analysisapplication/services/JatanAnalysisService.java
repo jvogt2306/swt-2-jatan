@@ -23,4 +23,8 @@ public class JatanAnalysisService {
   public Iterable<JatanAnalysisDetailsEntry> getAllCompanyAnalysisDetails() {
     return jatanAnalysisDetailsRepository.findAll();
   }
+
+  public Iterable<JatanAnalysisDetailsEntry> getCompanyAnalysisDetailsByCompany(String organizationName) {
+    return jatanAnalysisDetailsRepository.findByLogin(organizationName);
+  }
 }

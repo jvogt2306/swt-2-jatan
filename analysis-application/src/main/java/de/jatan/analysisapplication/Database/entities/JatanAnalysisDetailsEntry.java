@@ -29,6 +29,21 @@ public class JatanAnalysisDetailsEntry {
   @Column(name = "code_smells")
   private String codeSmells;
 
+  @Column(name = "security_rating")
+  private String securityRating;
+
+  @Column(name = "duplicated_lines")
+  private String duplicatedLines;
+
+  @Column(name = "reliability_rating")
+  private String reliabilityRating;
+
+  @Column(name = "violations")
+  private String violations;
+
+  @Column(name = "vulnerabilities")
+  private String vulnerabilities;
+
   @Column(name = "ncloc")
   private String linesOfCode;
 
