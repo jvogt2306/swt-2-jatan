@@ -1,5 +1,6 @@
 package de.jatan.analysisapplication.Database.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +31,12 @@ public class GithubOwnerEntity {
   private Long id;
   private String url;
   private String login;
+
+  @CreationTimestamp
+  private LocalDateTime createDateTime;
+
+  @UpdateTimestamp
+  private LocalDateTime updateDateTime;
 
   @OneToMany(mappedBy = "github_owner", cascade = CascadeType.MERGE)
   private List<GithubRepositoryEntity> repositories = new ArrayList<>();
