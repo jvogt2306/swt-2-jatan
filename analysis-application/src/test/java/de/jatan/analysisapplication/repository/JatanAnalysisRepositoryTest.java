@@ -29,8 +29,6 @@ public class JatanAnalysisRepositoryTest {
     mockEntry.setLogin("login");
     mockEntry.setBugs(22.22);
     mockEntry.setBugsPerLine(22.22);
-    mockEntry.setCoverage(22.22);
-    mockEntry.setCoveragePerLine(2);
     mockEntry.setCodeSmells(22.22);
     mockEntry.setCodeSmellsPerLine(2);
     mockEntry.setTechnicalDept(2);

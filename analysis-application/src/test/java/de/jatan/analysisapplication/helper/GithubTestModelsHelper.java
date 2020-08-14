@@ -114,7 +114,6 @@ public final class GithubTestModelsHelper {
     jatanAnalysisDetailsEntry.setLanguage("JavaScript");
     jatanAnalysisDetailsEntry.setBugs("0");
     jatanAnalysisDetailsEntry.setCodeSmells("14");
-    jatanAnalysisDetailsEntry.setCoverage("0.0");
     jatanAnalysisDetailsEntry.setLinesOfCode("326");
     jatanAnalysisDetailsEntry.setTechnicalDept("67");
     jatanAnalysisDetailsEntry.setBugsPerLine(0);
@@ -131,7 +130,6 @@ public final class GithubTestModelsHelper {
     jatanAnalysisDetailsEntry.setLanguage("JavaScript");
     jatanAnalysisDetailsEntry.setBugs("0");
     jatanAnalysisDetailsEntry.setCodeSmells("4");
-    jatanAnalysisDetailsEntry.setCoverage("0.0");
     jatanAnalysisDetailsEntry.setLinesOfCode("404");
     jatanAnalysisDetailsEntry.setTechnicalDept("13");
     jatanAnalysisDetailsEntry.setBugsPerLine(0);
@@ -146,11 +144,9 @@ public final class GithubTestModelsHelper {
     jatanAnalysisEntry.setLogin("Zeitgold");
     jatanAnalysisEntry.setBugs(0);
     jatanAnalysisEntry.setCodeSmells(4);
-    jatanAnalysisEntry.setCoverage(0.0);
     jatanAnalysisEntry.setTechnicalDept(13);
     jatanAnalysisEntry.setBugsPerLine(0);
     jatanAnalysisEntry.setCodeSmellsPerLine(0.099);
-    jatanAnalysisEntry.setCoveragePerLine(0);
     jatanAnalysisEntry.setTechnicalDeptPerLine(0.0321);
     return jatanAnalysisEntry;
   }
