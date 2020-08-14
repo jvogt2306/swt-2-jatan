@@ -1,14 +1,11 @@
 version: '3.4'
 services:
- jatan-db:
+
+  jatan-db:
     image: mariadb
     networks:
       - jatan_external
     restart: always
-    deploy:
-      placement:
-        constraints:
-          - "node.id==gzryrk3hljee4gn58uz31rd59"
     ports:
       - "6001:3306"
     volumes:
@@ -18,7 +15,7 @@ services:
       - MYSQL_USER=jatan
       - MYSQL_PASSWORD=jatan
       - MYSQL_DATABASE=jatan
- jatan-sonarqube:
+  jatan-sonarqube:
     image: bitnami/sonarqube:latest
     networks:
       - jatan_internal
@@ -29,7 +26,6 @@ services:
       - SONARQUBE_DATABASE_PASSWORD=bhkjca12eufas
       - POSTGRESQL_HOST=jatan-sonarqube-db
       - POSTGRESQL_ROOT_USER=sonarqube
-      - SONARQUBE_ELASTICSEARCH_JAVA_ADD_OPTS= -Dnode.store.allow_mmapfs=false
     ports:
       - "6009:9000"
       - "6010:9092"
@@ -39,14 +35,10 @@ services:
       - jatan_sonarqube_data_dir_ext:/opt/sonarqube/extensions
       - jatan_sonarqube_data_dir_plugins:/opt/sonarqube/lib/bundled-plugins
       - jatan_sonarqube_bitname:/bitnami
- jatan-sonarqube-db:
+  jatan-sonarqube-db:
     image: postgres
     networks:
       - jatan_internal
-    deploy:
-      placement:
-        constraints:
-          - "node.id==gzryrk3hljee4gn58uz31rd59"
     restart: always
     environment:
       - POSTGRES_USER=sonarqube
@@ -56,26 +48,23 @@ services:
       - "6011:5432"
     volumes:
       - jatan_sonarqube_data_dir_db:/var/lib/postgresql
-      # This needs explicit mapping due to https://github.com/docker-library/postgres/blob/4e48e3228a30763913ece952c611e5e9b95c8759/Dockerfile.te$
+      # This needs explicit mapping due to https://gihub.com/docker-library/postgres/blob/4e48e3228a30763913ece952c611e5e9b95c8759/Dockerfile.te$
       - jatan_sonarqube_data_dir_db_data:/var/lib/postgresql/data
- jatan-analysis-spring:
-    image: jatan/jatan_analysis
-    ports:
-      - "6020:8080"
-    restart: always
-    depends_on:
-       - jatan-db
-    networks:
-       - jatan_external
+#  jatan-analysis-spring:
+#    image: jatan/analysis-application
+#    ports:
+#      - "6020:8080"
+#    restart: always
+#    depends_on:
+#       - jatan-db
+#    networks:
+#       - jatan_external
 networks:
   jatan_internal:
-    driver: overlay
   jatan_external:
-    driver: overlay
 
 volumes:
   jatan_maria_db_database_dir:
-  jatan_reverse_proxy_data_dir:
   jatan_sonarqube_data_dir_conf:
   jatan_sonarqube_data_dir_data:
   jatan_sonarqube_data_dir_ext:
