@@ -18,8 +18,7 @@ import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
 public final class SonarQubeTestModelsHelper {
 
   public final static SonarQubeResponse getValidSonarQubeResponse() {
-    SonarQubeResponse sonarQubeResponse = new SonarQubeResponse();
-    new SonarQubeResponse(
+    return new SonarQubeResponse(
         new SonarQubeQualityGate("Sonar way",
             new SonarQubeConditions[] {
                 new SonarQubeConditions("1", "new_reliability_rating", null, null, "GREATER_THAN", "NO_VALUE"),
@@ -33,15 +32,13 @@ public final class SonarQubeTestModelsHelper {
         "2020-08-08T09:59:53+0000",
         new SonarQubeBranch("true", "master", "BRANCH", "http://localhost:9000/dashboard?id=sipgateio-basicauth-java"),
         "AXPNgzwxPOfeEGx4QfAV", "SUCCESS", "b0bb5c78b9bd48aaa746fef673a9ef535ff82cca");
-    return sonarQubeResponse;
   }
 
   public final static SonarResults getValidSonarQubeResult() {
     return new SonarResults(new SonarResultsComponents(
         new SonarResultsMeasures[] { new SonarResultsMeasures("code_smells", "4"),
-            new SonarResultsMeasures("bugs", "0"),
-            new SonarResultsMeasures("sqale_debt_ratio", "4.6"), new SonarResultsMeasures("sqale_index", "32"),
-            new SonarResultsMeasures("ncloc", "23") },
+            new SonarResultsMeasures("bugs", "0"), new SonarResultsMeasures("sqale_debt_ratio", "4.6"),
+            new SonarResultsMeasures("sqale_index", "32"), new SonarResultsMeasures("ncloc", "23") },
         "TRK", "sipgateio-basicauth-java", "AXPNlAM4POfeEGx4QfD8", "sipgateio-basicauth-java"));
   }
 

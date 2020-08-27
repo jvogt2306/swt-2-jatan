@@ -1,6 +1,7 @@
 
 package de.jatan.analysisapplication.controller;
 
+import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
 import de.jatan.analysisapplication.Domain.Model.*;
 import de.jatan.analysisapplication.services.SonarQubeResultsService;
 import de.jatan.analysisapplication.services.SonarQubeService;
@@ -26,6 +27,7 @@ public class SonarQubeController {
   @PostMapping(path = "/hook")
   @ResponseStatus(value = HttpStatus.OK)
   public void printSonarQubeStack(@RequestBody SonarQubeResponse sonarbody) {
+    System.out.println(sonarbody);
     SonarResults sonarResults = sonarQubeResultsService.getResults(sonarbody);
     sonarQubeResultsService.saveSonarQubeMeasures(sonarResults);
     sonarQubeService.removeRepositoryFromSonarQube(sonarbody.getProject());
