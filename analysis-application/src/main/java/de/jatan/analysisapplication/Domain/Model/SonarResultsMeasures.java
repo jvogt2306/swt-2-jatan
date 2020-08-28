@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("unused")
 public class SonarResultsMeasures {
   private String metric;
-
   private String value;
 
 }

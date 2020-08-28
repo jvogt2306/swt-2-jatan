@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -20,10 +19,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import de.jatan.analysisapplication.Domain.Model.SonarQubeBranch;
-import de.jatan.analysisapplication.Domain.Model.SonarQubeConditions;
-import de.jatan.analysisapplication.Domain.Model.SonarQubeProject;
-import de.jatan.analysisapplication.Domain.Model.SonarQubeQualityGate;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
 import de.jatan.analysisapplication.helper.SonarQubeTestModelsHelper;
 import de.jatan.analysisapplication.services.SonarQubeResultsService;
