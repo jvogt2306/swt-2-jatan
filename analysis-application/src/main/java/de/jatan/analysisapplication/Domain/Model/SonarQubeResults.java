@@ -1,11 +1,14 @@
 package de.jatan.analysisapplication.Domain.Model;
 
-import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-@Data
+
+@Getter
+@Setter
 @NoArgsConstructor
 @SuppressWarnings("unused")
 public class SonarQubeResults {
-    private SonarResultsComponents component;
+  private SonarResultsComponents component;
 
 }

@@ -1,21 +1,22 @@
 package de.jatan.analysisapplication.Domain.Model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-@Data
-@NoArgsConstructor
+
+@Getter
 @AllArgsConstructor
 @SuppressWarnings("unused")
 public class SonarResultsComponents {
-    private SonarResultsMeasures[] measures;
+  private SonarResultsMeasures[] measures;
 
-    private String qualifier;
+  private String qualifier;
 
-    private String name;
+  private String name;
 
-    private String id;
+  private String id;
 
-    private String key;
+  private String key;
 
 }

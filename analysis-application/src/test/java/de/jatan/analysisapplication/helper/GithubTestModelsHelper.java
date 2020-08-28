@@ -63,14 +63,10 @@ public final class GithubTestModelsHelper {
 
   public final static GithubOwner getValidTestGithubOwner() {
     GithubOwner githubOwner = new GithubOwner();
-    githubOwner.setLogin("validOrganization");
-    githubOwner.setUrl("https://api.github.com/users/validOrganization");
-    githubOwner.setHtml_url("https://github.com/validOrganization");
-    githubOwner.setFollowers_url("https://api.github.com/users/validOrganization/followers");
-    githubOwner.setFollowing_url("https://api.github.com/users/validOrganization/following{/other_user}");
-    githubOwner.setSubscriptions_url("https://api.github.com/users/validOrganization/subscriptions");
-    githubOwner.setOrganizations_url("https://api.github.com/users/validOrganization/orgs");
-    githubOwner.setRepos_url("https://api.github.com/users/validOrganization/repos");
+    githubOwner.setLogin("validOwner");
+    githubOwner.setUrl("https://api.github.com/users/validOwner");
+    githubOwner.setRepos_url("https://api.github.com/users/validOwner/repos");
+    githubOwner.setId("1");
     return githubOwner;
   }
 
@@ -84,6 +80,27 @@ public final class GithubTestModelsHelper {
     githubOrganization.setMembers_url("https://api.github.com/orgs/validOrganization/members{/member}");
     githubOrganization.setDescription(
         "validOrganization isn’t your typical telephony provider. With 200 colleagues, we work together on extraordinary landline and telephony services just for you.");
+    githubOrganization.setId(1L);
+    githubOrganization.setNode_id("validNodeId");
+    githubOrganization.setEvents_url("https://github.com/events/validEventUrl");
+    githubOrganization.setHooks_url("https://github.com/validHooks");
+    githubOrganization.setIssues_url("https://github.com/Issues");
+    githubOrganization.setPublic_members_url("https://github.com/public/members");
+    githubOrganization.setAvatar_url("https://github.com/avatar");
+    githubOrganization.setCompany("validCompany");
+    githubOrganization.setBlog("https://github.com/blob");
+    githubOrganization.setLocation("Germany");
+    githubOrganization.setEmail("valid@email.de");
+    githubOrganization.setIs_verified("true");
+    githubOrganization.setHas_organization_projects("true");
+    githubOrganization.setHas_repository_projects("true");
+    githubOrganization.setPublic_repos("72");
+    githubOrganization.setPublic_gists("0");
+    githubOrganization.setFollowers("0");
+    githubOrganization.setFollowing("0");
+    githubOrganization.setCreated_at("2020-06-16T07:34:00Z");
+    githubOrganization.setUpdated_at("2020-06-16T07:34:00Z");
+    githubOrganization.setType("Organization");
     return githubOrganization;
   }
 
@@ -94,6 +111,7 @@ public final class GithubTestModelsHelper {
     githubRepository.setOwner(getValidTestGithubOwner());
     githubRepository.setName("lambda-streams-to-firehose");
     githubRepository.setUrl("https://api.github.com/repos/Zeitgold/lambda-streams-to-firehose");
+
     return githubRepository;
   }
 

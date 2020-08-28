@@ -1,9 +1,11 @@
 package de.jatan.analysisapplication.Domain.Model;
 
-import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class GithubOrganization {
   private String login;

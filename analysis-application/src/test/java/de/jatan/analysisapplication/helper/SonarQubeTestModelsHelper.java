@@ -11,7 +11,7 @@ import de.jatan.analysisapplication.Domain.Model.SonarQubeConditions;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeProject;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeQualityGate;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
-import de.jatan.analysisapplication.Domain.Model.SonarResults;
+import de.jatan.analysisapplication.Domain.Model.SonarQubeResults;
 import de.jatan.analysisapplication.Domain.Model.SonarResultsComponents;
 import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
 
@@ -34,12 +34,15 @@ public final class SonarQubeTestModelsHelper {
         "AXPNgzwxPOfeEGx4QfAV", "SUCCESS", "b0bb5c78b9bd48aaa746fef673a9ef535ff82cca");
   }
 
-  public final static SonarResults getValidSonarQubeResult() {
-    return new SonarResults(new SonarResultsComponents(
+  public final static SonarQubeResults getValidSonarQubeResult() {
+    SonarQubeResults sonarQubeResults = new SonarQubeResults();
+    SonarResultsComponents sonarResultsComponents = new SonarResultsComponents(
         new SonarResultsMeasures[] { new SonarResultsMeasures("code_smells", "4"),
             new SonarResultsMeasures("bugs", "0"), new SonarResultsMeasures("sqale_debt_ratio", "4.6"),
             new SonarResultsMeasures("sqale_index", "32"), new SonarResultsMeasures("ncloc", "23") },
-        "TRK", "sipgateio-basicauth-java", "AXPNlAM4POfeEGx4QfD8", "sipgateio-basicauth-java"));
+        "TRK", "sipgateio-basicauth-java", "AXPNlAM4POfeEGx4QfD8", "sipgateio-basicauth-java");
+    sonarQubeResults.setComponent(sonarResultsComponents);
+    return sonarQubeResults;
   }
 
   public final static SonarqubeMeasuresEntity getValidSonarQubeMeasureEntity() {

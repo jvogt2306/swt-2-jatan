@@ -2,8 +2,6 @@ package de.jatan.analysisapplication.controller;
 
 import static org.mockito.Mockito.when;
 
-import com.google.gson.Gson;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
 import de.jatan.analysisapplication.helper.SonarQubeTestModelsHelper;
 import de.jatan.analysisapplication.services.SonarQubeResultsService;
 import de.jatan.analysisapplication.services.SonarQubeService;
@@ -56,8 +53,7 @@ public class SonarQubeControllerTest {
         .removeRepositoryFromSonarQube(SonarQubeTestModelsHelper.getValidSonarQubeResponse().getProject()))
             .thenReturn(true);
 
-    Gson g = new Gson();
-    String request = g.toJson(SonarQubeTestModelsHelper.getValidSonarQubeResponse(), SonarQubeResponse.class);
+    String request = "{\"qualityGate\":{\"name\":\"Sonar way\",\"conditions\":[{\"errorThreshold\":\"1\",\"metric\":\"new_reliability_rating\",\"operator\":\"GREATER_THAN\",\"status\":\"NO_VALUE\"},{\"errorThreshold\":\"1\",\"metric\":\"new_security_rating\",\"onLeakPeriod\":\"null\",\"value\":\"null\",\"operator\":\"GREATER_THAN\",\"status\":\"NO_VALUE\"},{\"errorThreshold\":\"1\",\"metric\":\"new_maintainability_rating\",\"operator\":\"GREATER_THAN\",\"status\":\"NO_VALUE\"},{\"errorThreshold\":\"3\",\"metric\":\"new_duplicated_lines_density\",\"operator\":\"GREATER_THAN\",\"status\":\"NO_VALUE\"}],\"status\":\"OK\"},\"serverUrl\":\"http://localhost:9000\",\"analysedAt\":\"2020-08-08T09:59:53+0000\",\"project\":{\"name\":\"sipgateio-basicauth-java\",\"key\":\"sipgateio-basicauth-java\",\"url\":\"http://localhost:9000/dashboard?id\u003dsipgateio-basicauth-java\"},\"changedAt\":\"2020-08-08T09:59:53+0000\",\"branch\":{\"isMain\":\"true\",\"name\":\"master\",\"type\":\"BRANCH\",\"url\":\"http://localhost:9000/dashboard?id\u003dsipgateio-basicauth-java\"},\"taskId\":\"AXPNgzwxPOfeEGx4QfAV\",\"status\":\"SUCCESS\",\"revision\":\"b0bb5c78b9bd48aaa746fef673a9ef535ff82cca\"}";
     mockMvc
         .perform(
             MockMvcRequestBuilders.post("/sonarqube/hook").content(request).contentType(MediaType.APPLICATION_JSON))
