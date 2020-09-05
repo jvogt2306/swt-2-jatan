@@ -37,10 +37,14 @@ public final class SonarQubeTestModelsHelper {
   public final static SonarQubeResults getValidSonarQubeResult() {
     SonarQubeResults sonarQubeResults = new SonarQubeResults();
     SonarResultsComponents sonarResultsComponents = new SonarResultsComponents(
-        new SonarResultsMeasures[] { new SonarResultsMeasures("code_smells", "4"),
-            new SonarResultsMeasures("bugs", "0"), new SonarResultsMeasures("sqale_debt_ratio", "4.6"),
-            new SonarResultsMeasures("sqale_index", "32"), new SonarResultsMeasures("ncloc", "23") },
+        new SonarResultsMeasures[] { new SonarResultsMeasures("code_smells", "10"),
+            new SonarResultsMeasures("bugs", "20"), new SonarResultsMeasures("sqale_index", "30"),
+            new SonarResultsMeasures("ncloc", "40"), new SonarResultsMeasures("reliability_rating", "1.0"),
+            new SonarResultsMeasures("violations", "9"), new SonarResultsMeasures("complexity", "2000"),
+            new SonarResultsMeasures("duplicated_lines", "10"), new SonarResultsMeasures("security_rating", "0.2"),
+            new SonarResultsMeasures("vulnerabilities", "50") },
         "TRK", "sipgateio-basicauth-java", "AXPNlAM4POfeEGx4QfD8", "sipgateio-basicauth-java");
+
     sonarQubeResults.setComponent(sonarResultsComponents);
     return sonarQubeResults;
   }
@@ -68,11 +72,17 @@ public final class SonarQubeTestModelsHelper {
 
     SonarqubeMeasuresEntity sonarqubeMeasuresEntity = new SonarqubeMeasuresEntity();
     sonarqubeMeasuresEntity.setId(19L);
-    sonarqubeMeasuresEntity.setSqale_index("32");
+    sonarqubeMeasuresEntity.setBugs("20");
+    sonarqubeMeasuresEntity.setSqale_index("30");
     sonarqubeMeasuresEntity.setProject("sipgateio-basicauth-java");
-    sonarqubeMeasuresEntity.setNcloc("23");
-    sonarqubeMeasuresEntity.setCode_smells("4");
-    sonarqubeMeasuresEntity.setBugs("0");
+    sonarqubeMeasuresEntity.setDuplicated_lines("10");
+    sonarqubeMeasuresEntity.setNcloc("40");
+    sonarqubeMeasuresEntity.setCode_smells("10");
+    sonarqubeMeasuresEntity.setReliability_rating("1.0");
+    sonarqubeMeasuresEntity.setComplexity("2000");
+    sonarqubeMeasuresEntity.setVulnerabilities("50");
+    sonarqubeMeasuresEntity.setViolations("9");
+    sonarqubeMeasuresEntity.setSecurity_rating("0.2");
     sonarqubeMeasuresEntity.setRepository(githubRepositoryEntity);
     return sonarqubeMeasuresEntity;
   }

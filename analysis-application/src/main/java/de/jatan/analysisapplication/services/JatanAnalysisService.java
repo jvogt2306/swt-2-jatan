@@ -13,6 +13,7 @@ public class JatanAnalysisService {
 
   @Autowired
   private JatanAnalysisRepository jatanAnalysisRepository;
+
   @Autowired
   private JatanAnalysisDetailsRepository jatanAnalysisDetailsRepository;
 

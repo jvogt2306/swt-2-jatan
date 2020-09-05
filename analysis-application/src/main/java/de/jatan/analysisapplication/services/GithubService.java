@@ -25,10 +25,8 @@ import de.jatan.analysisapplication.Domain.Model.GithubOwner;
 import de.jatan.analysisapplication.Domain.Model.GithubRepository;
 import de.jatan.analysisapplication.config.GlobalConfiguration;
 import de.jatan.analysisapplication.exceptions.GithubOrganisationNotFoundException;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class GithubService {
 
   @Autowired
@@ -38,24 +36,27 @@ public class GithubService {
   @Autowired
   private GithubOrganizationRepository githubOrganizationRepository;
 
+  private RestTemplate restTemplate;
+
+  public GithubService() {
+    this.restTemplate = new RestTemplate();
+  }
+
   public List<GithubRepository> fetchRepositoriesByUsername(String githubUsername) {
-    RestTemplate restTemplate = new RestTemplate();
-    List<GithubRepository> list = Arrays.asList(restTemplate
+    List<GithubRepository> list = Arrays.asList(this.restTemplate
         .getForObject("https://api.github.com/users/" + githubUsername + " /repos", GithubRepository[].class));
     return list;
   }
 
   public List<GithubRepository> fetchRepositoriesByURL(String url) {
-    RestTemplate restTemplate = new RestTemplate();
-    List<GithubRepository> list = Arrays.asList(restTemplate.getForObject(url, GithubRepository[].class));
+    List<GithubRepository> list = Arrays.asList(this.restTemplate.getForObject(url, GithubRepository[].class));
     return list;
   }
 
   public GithubOrganization fetchOrganizations(String organizationName) throws GithubOrganisationNotFoundException {
     try {
-      RestTemplate restTemplate = new RestTemplate();
-      GithubOrganization organization = restTemplate.getForObject("https://api.github.com/orgs/" + organizationName,
-          GithubOrganization.class);
+      GithubOrganization organization = this.restTemplate
+          .getForObject("https://api.github.com/orgs/" + organizationName, GithubOrganization.class);
       return organization;
     } catch (RestClientException e) {
       throw new GithubOrganisationNotFoundException(
@@ -76,7 +77,7 @@ public class GithubService {
     return true;
   }
 
-  public GithubOwnerEntity insertRepository(GithubRepository repo) {
+  public GithubRepositoryEntity insertRepository(GithubRepository repo) {
     GithubOwnerEntity githubOwner = githubOwnerRepository.findByLogin(repo.getOwner().getLogin());
     GithubOrganizationEntry githubOrganization = githubOrganizationRepository.findByLogin(repo.getOwner().getLogin());
     GithubRepositoryEntity repository = new GithubRepositoryEntity();
@@ -86,16 +87,18 @@ public class GithubService {
     repository.setGithub_organization(githubOrganization);
     repository.setGithub_owner(githubOwner);
     repository.setLanguage(repo.getLanguage());
-    githubOrganization.addRepository(repository);
     githubOwner.addRepository(repository);
-    return githubOwnerRepository.save(githubOwner);
+    githubOrganization.addRepository(repository);
+    githubRepositoryRepository.save(repository);
+    return repository;
   }
 
   public GithubOwnerEntity insertGithubOwner(GithubOwner owner) {
     GithubOwnerEntity githubOwner = new GithubOwnerEntity();
     githubOwner.setLogin(owner.getLogin());
     githubOwner.setUrl(owner.getUrl());
-    return githubOwnerRepository.save(githubOwner);
+    GithubOwnerEntity response = githubOwnerRepository.save(githubOwner);
+    return response;
   }
 
   public GithubOrganizationEntry insertGithubOrganization(GithubOrganization organization) {

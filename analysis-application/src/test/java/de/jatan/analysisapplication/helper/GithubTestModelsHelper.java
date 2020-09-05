@@ -23,39 +23,13 @@ public final class GithubTestModelsHelper {
     githubOrganizationEntity.setDescription("Organization Description");
     githubOrganizationEntity.setLogin("Organization Login");
     githubOrganizationEntity.setUrl("https://organization-example.de");
-    githubOrganizationEntity.setId(1L);
     githubOrganizationEntity.addRepository(repositoryEntity);
     return githubOrganizationEntity;
-  }
-
-  public final static GithubRepositoryEntity getValidTestGithubRepositoryEntity() {
-    GithubRepositoryEntity githubRepositoryEntity = new GithubRepositoryEntity();
-    GithubOwnerEntity githubOwnerEntity = new GithubOwnerEntity();
-    GithubOrganizationEntry githubOrganizationEntry = new GithubOrganizationEntry();
-
-    githubRepositoryEntity.setId(1L);
-    githubRepositoryEntity.setDescription("Example Repository Description");
-    githubRepositoryEntity.setLanguage("Java");
-    githubRepositoryEntity.setName("Example Repo");
-    githubRepositoryEntity.setUrl("https://example.de");
-    githubRepositoryEntity.setGithub_organization(githubOrganizationEntry);
-    githubRepositoryEntity.setGithub_owner(githubOwnerEntity);
-    githubOwnerEntity.addRepository(githubRepositoryEntity);
-    githubOwnerEntity.setId(1L);
-    githubOwnerEntity.setLogin("OwnerLogin");
-    githubOwnerEntity.setUrl("https://owner-example.de");
-    githubOrganizationEntry.setId(1L);
-    githubOrganizationEntry.setDescription("Organization Description");
-    githubOrganizationEntry.setLogin("Organization Login");
-    githubOrganizationEntry.setUrl("https://organization-example.de");
-    githubOrganizationEntry.addRepository(githubRepositoryEntity);
-    return githubRepositoryEntity;
   }
 
   public final static GithubOwnerEntity getValidTestGithubOwnerEntity() {
     GithubOwnerEntity githubOwnerEntity = new GithubOwnerEntity();
     githubOwnerEntity.addRepository(getValidTestGithubRepositoryEntity());
-    githubOwnerEntity.setId(1L);
     githubOwnerEntity.setLogin("OwnerLogin");
     githubOwnerEntity.setUrl("https://owner-example.de");
     return githubOwnerEntity;
@@ -63,9 +37,9 @@ public final class GithubTestModelsHelper {
 
   public final static GithubOwner getValidTestGithubOwner() {
     GithubOwner githubOwner = new GithubOwner();
-    githubOwner.setLogin("validOwner");
+    githubOwner.setLogin("OwnerLogin");
     githubOwner.setUrl("https://api.github.com/users/validOwner");
-    githubOwner.setRepos_url("https://api.github.com/users/validOwner/repos");
+    githubOwner.setRepos_url("https://api.github.com/users/valid/repos");
     githubOwner.setId("1");
     return githubOwner;
   }
@@ -104,14 +78,38 @@ public final class GithubTestModelsHelper {
     return githubOrganization;
   }
 
+  public final static GithubRepositoryEntity getValidTestGithubRepositoryEntity() {
+    GithubRepositoryEntity githubRepositoryEntity = new GithubRepositoryEntity();
+    GithubOwnerEntity githubOwnerEntity = new GithubOwnerEntity();
+    GithubOrganizationEntry githubOrganizationEntry = new GithubOrganizationEntry();
+
+    githubRepositoryEntity.setId(1L);
+    githubRepositoryEntity.setDescription("Example Repository Description");
+    githubRepositoryEntity.setLanguage("Java");
+    githubRepositoryEntity.setName("Example Repo");
+    githubRepositoryEntity.setUrl("https://api.github.com/users/valid/repos");
+    githubRepositoryEntity.setGithub_organization(githubOrganizationEntry);
+    githubRepositoryEntity.setGithub_owner(githubOwnerEntity);
+    githubOwnerEntity.addRepository(githubRepositoryEntity);
+    githubOwnerEntity.setId(1L);
+    githubOwnerEntity.setLogin("OwnerLogin");
+    githubOwnerEntity.setUrl("https://owner-example.de");
+    githubOrganizationEntry.setId(1L);
+    githubOrganizationEntry.setDescription("Organization Description");
+    githubOrganizationEntry.setLogin("Organization Login");
+    githubOrganizationEntry.setUrl("https://organization-example.de");
+    githubOrganizationEntry.addRepository(githubRepositoryEntity);
+    return githubRepositoryEntity;
+  }
+
   public final static GithubRepository getValidTestGithubRepositoryOne() {
     GithubRepository githubRepository = new GithubRepository();
-    githubRepository.setDescription("AWS Lambda function to forward Stream data to Kinesis Firehose");
-    githubRepository.setLanguage("JavaScript");
+    githubRepository.setDescription("Example Repository Description");
+    githubRepository.setLanguage("Java");
     githubRepository.setOwner(getValidTestGithubOwner());
-    githubRepository.setName("lambda-streams-to-firehose");
-    githubRepository.setUrl("https://api.github.com/repos/Zeitgold/lambda-streams-to-firehose");
-
+    githubRepository.setName("Example Repo");
+    githubRepository.setUrl("https://api.github.com/users/valid/repos");
+    githubRepository.setSvn_url("https://api.github.com/users/valid/repos");
     return githubRepository;
   }
 

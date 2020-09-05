@@ -20,12 +20,12 @@ public class GithubOwnerTest {
 
   @Test
   public void createGithubOwner_contains_login() throws Exception {
-    assertEquals("validOwner", GithubTestModelsHelper.getValidTestGithubOwner().getLogin());
+    assertEquals("OwnerLogin", GithubTestModelsHelper.getValidTestGithubOwner().getLogin());
   }
 
   @Test
   public void createGithubOwner_contains_repo_url() throws Exception {
-    assertEquals("https://api.github.com/users/validOwner/repos",
+    assertEquals("https://api.github.com/users/valid/repos",
         GithubTestModelsHelper.getValidTestGithubOwner().getRepos_url());
   }
 

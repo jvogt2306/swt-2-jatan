@@ -24,7 +24,6 @@ import de.jatan.analysisapplication.exceptions.GithubOrganisationNotFoundExcepti
 @RestController
 @RequestMapping(path = "/jatan")
 public class AnalysisController {
-
   @Autowired
   private GithubService githubService;
   @Autowired

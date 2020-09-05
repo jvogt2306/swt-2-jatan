@@ -1,29 +1,39 @@
 package de.jatan.analysisapplication.services;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
+import de.jatan.analysisapplication.Database.repositories.SonarQubeMeasuresRepository;
+import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
 import de.jatan.analysisapplication.helper.SonarQubeResultTestModelHelper;
+import de.jatan.analysisapplication.helper.SonarQubeTestModelsHelper;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
+@RunWith(MockitoJUnitRunner.class)
+@DataJpaTest
 public class SonarQubeResultsServiceTest {
 
-  @Autowired
+  @InjectMocks
   private SonarQubeResultsService sonarQubeResultsService;
+
+  @Mock
+  private SonarQubeMeasuresRepository mockSonarQubeMeasuresRepository;
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
-
   }
 
   @Test
@@ -33,9 +43,23 @@ public class SonarQubeResultsServiceTest {
   }
 
   @Test
+  public void should_return_empty_string_when_measures_not_contains_code_smells() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 0);
+    assertEquals("", sonarQubeResultsService.getCodeSmells(sonarResultMeasures));
+  }
+
+  @Test
   public void should_get_bugs_from_SonarqubeResultMeasures() throws Exception {
     assertTrue(
         sonarQubeResultsService.getBugs(SonarQubeResultTestModelHelper.getValidSonarResultsMeasures()).equals("20"));
+  }
+
+  @Test
+  public void should_return_empty_string_when_measures_not_contains_bugs() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 1);
+    assertEquals("", sonarQubeResultsService.getBugs(sonarResultMeasures));
   }
 
   @Test
@@ -45,9 +69,23 @@ public class SonarQubeResultsServiceTest {
   }
 
   @Test
+  public void should_return_empty_string_when_measures_not_contains_complexity() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 6);
+    assertEquals("", sonarQubeResultsService.getComplexity(sonarResultMeasures));
+  }
+
+  @Test
   public void should_get_duplicated_lines_from_SonarqubeResultMeasures() throws Exception {
     assertTrue(sonarQubeResultsService.getDuplicatedLines(SonarQubeResultTestModelHelper.getValidSonarResultsMeasures())
         .equals("10"));
+  }
+
+  @Test
+  public void should_return_empty_string_when_measures_not_contains_duplicated_lines() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 7);
+    assertEquals("", sonarQubeResultsService.getDuplicatedLines(sonarResultMeasures));
   }
 
   @Test
@@ -57,9 +95,23 @@ public class SonarQubeResultsServiceTest {
   }
 
   @Test
+  public void should_return_empty_string_when_measures_not_contains_ncloc() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 3);
+    assertEquals("", sonarQubeResultsService.getLinesOfCode(sonarResultMeasures));
+  }
+
+  @Test
   public void should_get_reliability_rating_from_SonarqubeResultMeasures() throws Exception {
     assertTrue(sonarQubeResultsService
         .getReliabilityRating(SonarQubeResultTestModelHelper.getValidSonarResultsMeasures()).equals("1.0"));
+  }
+
+  @Test
+  public void should_return_empty_string_when_measures_not_contains_reliability_rating() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 4);
+    assertEquals("", sonarQubeResultsService.getReliabilityRating(sonarResultMeasures));
   }
 
   @Test
@@ -69,9 +121,23 @@ public class SonarQubeResultsServiceTest {
   }
 
   @Test
+  public void should_return_empty_string_when_measures_not_contains_secuity_rating() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 8);
+    assertEquals("", sonarQubeResultsService.getSecurityRating(sonarResultMeasures));
+  }
+
+  @Test
   public void should_get_sqale_index_from_SonarqubeResultMeasures() throws Exception {
     assertTrue(sonarQubeResultsService.getSqaleIndex(SonarQubeResultTestModelHelper.getValidSonarResultsMeasures())
         .equals("30"));
+  }
+
+  @Test
+  public void should_return_empty_string_when_measures_not_contains_sqale_index() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 2);
+    assertEquals("", sonarQubeResultsService.getSqaleIndex(sonarResultMeasures));
   }
 
   @Test
@@ -81,8 +147,32 @@ public class SonarQubeResultsServiceTest {
   }
 
   @Test
+  public void should_return_empty_string_when_measures_not_contains_violations() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 5);
+    assertEquals("", sonarQubeResultsService.getViolations(sonarResultMeasures));
+  }
+
+  @Test
   public void should_get_vulnerabilities_from_SonarqubeResultMeasures() throws Exception {
     assertTrue(sonarQubeResultsService.getVulnerabilities(SonarQubeResultTestModelHelper.getValidSonarResultsMeasures())
         .equals("50"));
+  }
+
+  @Test
+  public void should_return_empty_string_when_measures_not_contains_vulnerabilities() throws Exception {
+    SonarResultsMeasures[] sonarResultMeasures = SonarQubeResultTestModelHelper.getValidSonarResultsMeasures();
+    sonarResultMeasures = ArrayUtils.remove(sonarResultMeasures, 9);
+    assertEquals("", sonarQubeResultsService.getVulnerabilities(sonarResultMeasures));
+  }
+
+  @Test
+  public void should_return_SonarqubeMeasuresEntity_when_new_entity_save_in_repository() throws Exception {
+    SonarqubeMeasuresEntity sonarqubeMeasuresEntity = SonarQubeTestModelsHelper.getValidSonarQubeMeasureEntity();
+    when(mockSonarQubeMeasuresRepository.save(any(SonarqubeMeasuresEntity.class))).thenReturn(sonarqubeMeasuresEntity);
+
+    final SonarqubeMeasuresEntity response = sonarQubeResultsService
+        .saveSonarQubeMeasures(SonarQubeTestModelsHelper.getValidSonarQubeResult());
+    assertEquals(sonarqubeMeasuresEntity.getBugs(), response.getBugs());
   }
 }

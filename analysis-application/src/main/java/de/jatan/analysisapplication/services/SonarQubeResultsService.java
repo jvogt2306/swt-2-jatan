@@ -9,11 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import de.jatan.analysisapplication.Database.entities.SonarqubeMeasuresEntity;
-import de.jatan.analysisapplication.Database.repositories.GithubRepositoryRepository;
 import de.jatan.analysisapplication.Database.repositories.SonarQubeMeasuresRepository;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResponse;
 import de.jatan.analysisapplication.Domain.Model.SonarQubeResults;
@@ -21,22 +18,13 @@ import de.jatan.analysisapplication.Domain.Model.SonarResultsMeasures;
 import de.jatan.analysisapplication.config.GlobalConfiguration;
 
 @Service
-@Configuration
-@PropertySource("classpath:application.properties")
 public class SonarQubeResultsService {
-
-  private final RestTemplate restTemplate;
 
   @Autowired
   private SonarQubeMeasuresRepository sonarQubeMeasuresRepository;
 
   @Autowired
-  private GithubRepositoryRepository githubRepositoryRepository;
-
-  public SonarQubeResultsService(final RestTemplateBuilder restTemplateBuilder) {
-    this.restTemplate = restTemplateBuilder
-        .basicAuthentication(GlobalConfiguration.SonarUser, GlobalConfiguration.SonarPassword).build();
-  }
+  private RestTemplateBuilder restTemplateBuilder;
 
   public SonarQubeResults getResults(final SonarQubeResponse sonarbody) {
     final String projectKey = sonarbody.getProject().getKey();
@@ -44,8 +32,11 @@ public class SonarQubeResultsService {
     final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(searchSonarProjectEndpoint)
         .queryParam("component", projectKey).queryParam("metricKeys",
             "bugs,code_smells,sqale_index,ncloc,vulnerabilities,security_rating,duplicated_lines,complexity,violations,reliability_rating");
-    final ResponseEntity<SonarQubeResults> responseEntity = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET,
-        null, SonarQubeResults.class);
+    final RestTemplate restTemplate = this.restTemplateBuilder
+        .basicAuthentication(GlobalConfiguration.SonarUser, GlobalConfiguration.SonarPassword).build();
+    final ResponseEntity<SonarQubeResults> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
+        HttpMethod.GET, null, SonarQubeResults.class);
+
     return responseEntity.getBody();
   }
 
@@ -143,15 +134,12 @@ public class SonarQubeResultsService {
   public SonarqubeMeasuresEntity saveSonarQubeMeasures(final SonarQubeResults sonarResults) {
     final Optional<SonarqubeMeasuresEntity> entityInDB = sonarQubeMeasuresRepository
         .findByProject(sonarResults.getComponent().getKey());
+    SonarqubeMeasuresEntity sonarqubeMeasuresEntity;
     if (entityInDB.isEmpty()) {
-      return insertMeasuresIntoDatabase(sonarResults);
+      sonarqubeMeasuresEntity = new SonarqubeMeasuresEntity();
     } else {
-      return updateMeasuresInDatabase(entityInDB.get(), sonarResults);
+      sonarqubeMeasuresEntity = entityInDB.get();
     }
-  }
-
-  private SonarqubeMeasuresEntity updateMeasuresInDatabase(final SonarqubeMeasuresEntity sonarqubeMeasuresEntity,
-      final SonarQubeResults sonarResults) {
     final SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
     sonarqubeMeasuresEntity.setBugs(getBugs(measures));
     sonarqubeMeasuresEntity.setCode_smells(getCodeSmells(measures));
@@ -163,25 +151,6 @@ public class SonarQubeResultsService {
     sonarqubeMeasuresEntity.setComplexity(getComplexity(measures));
     sonarqubeMeasuresEntity.setViolations(getViolations(measures));
     sonarqubeMeasuresEntity.setReliability_rating(getReliabilityRating(measures));
-    return sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
-  }
-
-  public SonarqubeMeasuresEntity insertMeasuresIntoDatabase(final SonarQubeResults sonarResults) {
-    final SonarqubeMeasuresEntity sonarqubeMeasuresEntity = new SonarqubeMeasuresEntity();
-    final SonarResultsMeasures[] measures = sonarResults.getComponent().getMeasures();
-
-    sonarqubeMeasuresEntity.setBugs(getBugs(measures));
-    sonarqubeMeasuresEntity.setCode_smells(getCodeSmells(measures));
-    sonarqubeMeasuresEntity.setNcloc(getLinesOfCode(measures));
-    sonarqubeMeasuresEntity.setSqale_index(getSqaleIndex(measures));
-    sonarqubeMeasuresEntity.setVulnerabilities(getVulnerabilities(measures));
-    sonarqubeMeasuresEntity.setSecurity_rating(getSecurityRating(measures));
-    sonarqubeMeasuresEntity.setDuplicated_lines(getDuplicatedLines(measures));
-    sonarqubeMeasuresEntity.setComplexity(getComplexity(measures));
-    sonarqubeMeasuresEntity.setViolations(getViolations(measures));
-    sonarqubeMeasuresEntity.setReliability_rating(getReliabilityRating(measures));
-    sonarqubeMeasuresEntity.setProject(sonarResults.getComponent().getName());
-    sonarqubeMeasuresEntity.setRepository(githubRepositoryRepository.findByName(sonarResults.getComponent().getKey()));
     return sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
   }
 }

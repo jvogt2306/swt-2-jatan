@@ -19,7 +19,6 @@ public class SonarQubeController {
 
   @Autowired
   private SonarQubeResultsService sonarQubeResultsService;
-
   @Autowired
   private SonarQubeService sonarQubeService;
 

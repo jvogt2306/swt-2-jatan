@@ -7,8 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +21,14 @@ import de.jatan.analysisapplication.Domain.Model.SonarQubeProjectWebhook;
 import de.jatan.analysisapplication.config.GlobalConfiguration;
 
 @Service
-@Configuration
-@PropertySource("classpath:application.properties")
 public class SonarQubeService {
   private static final String APPLICATIONPATH = System.getProperty("user.dir");
   private static final String REPOSITORYPATH = "/src/main/resources/repositories/";
   public static final String REPOSITORYFOLDERABSOLUTE = APPLICATIONPATH + REPOSITORYPATH;
   private final RestTemplate restTemplate;
 
-  public SonarQubeService(RestTemplateBuilder restTemplateBuilder) {
+  public SonarQubeService() {
+    RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
     this.restTemplate = restTemplateBuilder
         .basicAuthentication(GlobalConfiguration.SonarUser, GlobalConfiguration.SonarPassword).build();
   }

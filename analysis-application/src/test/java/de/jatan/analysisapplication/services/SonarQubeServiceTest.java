@@ -116,9 +116,6 @@ public class SonarQubeServiceTest {
         .thenReturn(true);
     assertTrue(
         sonarQubeService.createSonarPropertiesFile(path, githubRepository.getName(), githubRepository.getLanguage()));
-
-    // private void createSonarPropertiesFile(String path, String projectName,
-    // String language) throws IOException
   }
 
   @Test
