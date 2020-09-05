@@ -10,6 +10,7 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestClientException;
@@ -35,15 +36,16 @@ public class GithubService {
   private GithubRepositoryRepository githubRepositoryRepository;
   @Autowired
   private GithubOrganizationRepository githubOrganizationRepository;
-
+  @Autowired
   private RestTemplate restTemplate;
 
-  public GithubService() {
-    this.restTemplate = new RestTemplate();
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
   }
 
   public List<GithubRepository> fetchRepositoriesByUsername(String githubUsername) {
-    List<GithubRepository> list = Arrays.asList(this.restTemplate
+    List<GithubRepository> list = Arrays.asList(restTemplate()
         .getForObject("https://api.github.com/users/" + githubUsername + " /repos", GithubRepository[].class));
     return list;
   }
@@ -137,14 +139,14 @@ public class GithubService {
     return true;
   }
 
-  private boolean isRepositoryExists(GithubRepository repository) {
+  public boolean isRepositoryExists(GithubRepository repository) {
     if (githubRepositoryRepository.findByName(repository.getName()) != null) {
       return true;
     }
     return false;
   }
 
-  private boolean isOrganizationExists(GithubOrganization organization) {
+  public boolean isOrganizationExists(GithubOrganization organization) {
     if (githubOrganizationRepository.findByLogin(organization.getLogin()) != null) {
       return true;
     }
