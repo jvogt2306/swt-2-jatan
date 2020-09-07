@@ -1,7 +1,6 @@
 package de.jatan.analysisapplication.helper;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
