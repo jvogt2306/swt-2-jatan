@@ -1,5 +1,7 @@
 package de.jatan.analysisapplication.helper;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +25,8 @@ public final class GithubTestModelsHelper {
     githubOrganizationEntity.setDescription("Organization Description");
     githubOrganizationEntity.setLogin("Organization Login");
     githubOrganizationEntity.setUrl("https://organization-example.de");
+    githubOrganizationEntity.setCreateDateTime(LocalDateTime.now());
+    githubOrganizationEntity.setUpdateDateTime(LocalDateTime.now());
     githubOrganizationEntity.addRepository(repositoryEntity);
     return githubOrganizationEntity;
   }
@@ -31,6 +35,9 @@ public final class GithubTestModelsHelper {
     GithubOwnerEntity githubOwnerEntity = new GithubOwnerEntity();
     githubOwnerEntity.addRepository(getValidTestGithubRepositoryEntity());
     githubOwnerEntity.setLogin("OwnerLogin");
+    githubOwnerEntity.setUrl("https://owner-example.de");
+    githubOwnerEntity.setCreateDateTime(LocalDateTime.now());
+    githubOwnerEntity.setUpdateDateTime(LocalDateTime.now());
     githubOwnerEntity.setUrl("https://owner-example.de");
     return githubOwnerEntity;
   }
@@ -90,6 +97,9 @@ public final class GithubTestModelsHelper {
     githubRepositoryEntity.setUrl("https://api.github.com/users/valid/repos");
     githubRepositoryEntity.setGithub_organization(githubOrganizationEntry);
     githubRepositoryEntity.setGithub_owner(githubOwnerEntity);
+    githubRepositoryEntity.setCreateDateTime(LocalDateTime.now());
+    githubRepositoryEntity.setUpdateDateTime(LocalDateTime.now());
+
     githubOwnerEntity.addRepository(githubRepositoryEntity);
     githubOwnerEntity.setId(1L);
     githubOwnerEntity.setLogin("OwnerLogin");
@@ -134,8 +144,11 @@ public final class GithubTestModelsHelper {
     jatanAnalysisDetailsEntry.setTechnicalDept("67");
     jatanAnalysisDetailsEntry.setBugsPerLine(0);
     jatanAnalysisDetailsEntry.setCodeSmellsPerLine(0.042);
-    jatanAnalysisDetailsEntry.setCodeSmellsPerLine(0);
-    jatanAnalysisDetailsEntry.setTechnicalDeptPerLine(0.20);
+    jatanAnalysisDetailsEntry.setVulnerabilities("2");
+    jatanAnalysisDetailsEntry.setViolations("30");
+    jatanAnalysisDetailsEntry.setReliabilityRating("25");
+    jatanAnalysisDetailsEntry.setDuplicatedLines("50");
+    jatanAnalysisDetailsEntry.setSecurityRating("1");
     return jatanAnalysisDetailsEntry;
   }
 

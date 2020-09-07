@@ -150,7 +150,6 @@ public class SonarQubeResultsService {
     sonarqubeMeasuresEntity.setDuplicated_lines(getDuplicatedLines(measures));
     sonarqubeMeasuresEntity.setComplexity(getComplexity(measures));
     sonarqubeMeasuresEntity.setViolations(getViolations(measures));
-    sonarqubeMeasuresEntity.setReliability_rating(getReliabilityRating(measures));
     return sonarQubeMeasuresRepository.save(sonarqubeMeasuresEntity);
   }
 }

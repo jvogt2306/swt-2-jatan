@@ -60,6 +60,11 @@ public class GithubServiceTest {
     final GithubOwner githubOwner = GithubTestModelsHelper.getValidTestGithubOwner();
     final GithubOwnerEntity response = githubService.insertGithubOwner(githubOwner);
     assertEquals(response.getLogin(), githubOwnerEntity.getLogin());
+    assertEquals(response.getCreateDateTime(), githubOwnerEntity.getCreateDateTime());
+    assertEquals(response.getUpdateDateTime(), githubOwnerEntity.getUpdateDateTime());
+    assertEquals(response.getId(), githubOwnerEntity.getId());
+    assertEquals(response.getRepositories(), githubOwnerEntity.getRepositories());
+    assertEquals(response.getUrl(), githubOwnerEntity.getUrl());
   }
 
   @Test
@@ -71,6 +76,12 @@ public class GithubServiceTest {
     final GithubOrganizationEntry response = githubService
         .insertGithubOrganization(GithubTestModelsHelper.getValidTestGithubOrganization());
     assertEquals(response.getLogin(), githubOrganizationEntry.getLogin());
+    assertEquals(response.getDescription(), githubOrganizationEntry.getDescription());
+    assertEquals(response.getUrl(), githubOrganizationEntry.getUrl());
+    assertEquals(response.getCreateDateTime(), githubOrganizationEntry.getCreateDateTime());
+    assertEquals(response.getUpdateDateTime(), githubOrganizationEntry.getUpdateDateTime());
+    assertEquals(response.getId(), githubOrganizationEntry.getId());
+    assertEquals(response.getRepositories(), githubOrganizationEntry.getRepositories());
   }
 
   @Test

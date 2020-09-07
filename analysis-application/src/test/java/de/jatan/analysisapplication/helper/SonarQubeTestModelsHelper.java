@@ -1,6 +1,8 @@
 package de.jatan.analysisapplication.helper;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import de.jatan.analysisapplication.Database.entities.GithubOrganizationEntry;
 import de.jatan.analysisapplication.Database.entities.GithubOwnerEntity;
@@ -69,6 +71,8 @@ public final class SonarQubeTestModelsHelper {
     githubOrganizationEntry.setLogin("sipgate-io");
     githubOrganizationEntry.setUrl("https://organization-example.de");
     githubOrganizationEntry.addRepository(githubRepositoryEntity);
+    githubOrganizationEntry.setCreateDateTime(LocalDateTime.now());
+    githubOrganizationEntry.setUpdateDateTime(LocalDateTime.now());
 
     SonarqubeMeasuresEntity sonarqubeMeasuresEntity = new SonarqubeMeasuresEntity();
     sonarqubeMeasuresEntity.setId(19L);
@@ -84,6 +88,9 @@ public final class SonarQubeTestModelsHelper {
     sonarqubeMeasuresEntity.setViolations("9");
     sonarqubeMeasuresEntity.setSecurity_rating("0.2");
     sonarqubeMeasuresEntity.setRepository(githubRepositoryEntity);
+    sonarqubeMeasuresEntity.setUpdateDateTime(LocalDateTime.now());
+    sonarqubeMeasuresEntity.setCreateDateTime(LocalDateTime.now());
+    ;
     return sonarqubeMeasuresEntity;
   }
 

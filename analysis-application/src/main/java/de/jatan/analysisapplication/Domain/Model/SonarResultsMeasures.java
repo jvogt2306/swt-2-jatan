@@ -6,11 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @SuppressWarnings("unused")
 public class SonarResultsMeasures {
   private String metric;
   private String value;
-
 }

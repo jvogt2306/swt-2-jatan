@@ -174,5 +174,19 @@ public class SonarQubeResultsServiceTest {
     final SonarqubeMeasuresEntity response = sonarQubeResultsService
         .saveSonarQubeMeasures(SonarQubeTestModelsHelper.getValidSonarQubeResult());
     assertEquals(sonarqubeMeasuresEntity.getBugs(), response.getBugs());
+    assertEquals(sonarqubeMeasuresEntity.getCode_smells(), response.getCode_smells());
+    assertEquals(sonarqubeMeasuresEntity.getComplexity(), response.getComplexity());
+    assertEquals(sonarqubeMeasuresEntity.getCreateDateTime(), response.getCreateDateTime());
+    assertEquals(sonarqubeMeasuresEntity.getDuplicated_lines(), response.getDuplicated_lines());
+    assertEquals(sonarqubeMeasuresEntity.getId(), response.getId());
+    assertEquals(sonarqubeMeasuresEntity.getNcloc(), response.getNcloc());
+    assertEquals(sonarqubeMeasuresEntity.getProject(), response.getProject());
+    assertEquals(sonarqubeMeasuresEntity.getReliability_rating(), response.getReliability_rating());
+    assertEquals(sonarqubeMeasuresEntity.getRepository(), response.getRepository());
+    assertEquals(sonarqubeMeasuresEntity.getSecurity_rating(), response.getSecurity_rating());
+    assertEquals(sonarqubeMeasuresEntity.getSqale_index(), response.getSqale_index());
+    assertEquals(sonarqubeMeasuresEntity.getUpdateDateTime(), response.getUpdateDateTime());
+    assertEquals(sonarqubeMeasuresEntity.getViolations(), response.getViolations());
+    assertEquals(sonarqubeMeasuresEntity.getVulnerabilities(), response.getVulnerabilities());
   }
 }
